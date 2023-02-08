@@ -1,10 +1,9 @@
 import React from 'react';
 
-const App: React.FC = () => {
-
+const Quiz: React.FC = () => {
   return (
     <div>123</div>
-  );
+  )
 }
 
-export default App;
+export default Quiz;
