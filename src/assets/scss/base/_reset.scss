@@ -1,7 +1,13 @@
 /** HTML */
-body {
+html, body {
   margin: 0px;
   background-color: $color__main;
   height: 100vh;
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 /** HTML */
