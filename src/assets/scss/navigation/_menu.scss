@@ -10,3 +10,9 @@ nav {
     color: $color-disabled;
   }
 }
+
+.nav-active {
+  & svg {
+    color: $color-blue;
+  }
+}
