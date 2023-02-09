@@ -1,15 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import apiService from 'app/api/service/apiService';
-import { useSelector } from 'react-redux';
-import { RootState } from 'app/store/types';
+import SelectField from 'app/common/components/Form/SelectField';
+import { Categories } from 'app/api/model/get/getQuizCategory';
+import { Form, FormikProvider, useFormik } from 'formik';
+import { FormValues } from './types';
 
 const Quiz: React.FC = () => {
-  const navigationState = useSelector((state: RootState) => state.global.navigationState);
-  /** 加入倒數 */
+  const [options, setOptions] = useState<Categories[]>([]);
+
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      category: 1,
+      amount: 10
+    },
+    onSubmit: (formValues) => {
+      console.log('formValues', formValues);
+    }
+  });
+
   useEffect(() => {
     (async () => {
       const response = await apiService.getQuizCategory({});
-      console.log('response', response);
+      if (response) {
+        setOptions(response);
+      }
       console.log(await apiService.getQuizQuestions({
         params: {
           amount: 10,
@@ -19,8 +33,21 @@ const Quiz: React.FC = () => {
     })();
   }, []);
 
+  const handleSelectChange = (value: number) => {
+    formik.setFieldValue('category', value);
+  }
+
   return (
-    <div>123</div>
+    <div id="quiz" className="quiz-container" >
+      <FormikProvider value={formik}>
+        <Form>
+          <SelectField name="category" options={options} onChange={handleSelectChange}/>
+          <div className="w-100 d-flex justify-content-center">
+            <button type="submit" className="button-main mt-5">Submit</button>
+          </div>
+        </Form>
+      </FormikProvider>
+    </div>
   )
 }
 
