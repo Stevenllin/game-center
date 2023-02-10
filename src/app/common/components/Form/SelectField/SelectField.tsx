@@ -10,8 +10,8 @@ const SelectField: React.FC<SelectFieldProps> = (props) => {
     <div className="select-01 w-100">
       <Select
         {...field}
-        placeholder="Choose your questions"
-        onChange={props.onChange}
+        placeholder={props.placeholder}
+        onChange={(event) => props.onChange(event, props.name)}
       >
         {
           props.options.map((item, index) => (

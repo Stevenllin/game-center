@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app/App';
 import reportWebVitals from './reportWebVitals';
-import "antd/dist/antd.css";
+import 'antd/dist/antd.min.css';
 import 'assets/scss/common.scss';
 
 ReactDOM.render(

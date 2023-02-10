@@ -5,3 +5,12 @@
   justify-content: center;
   align-items: center;
 }
+
+.quiz-item {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.form-container {
+  width: 400px;
+}
