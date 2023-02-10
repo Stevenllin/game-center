@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import apiService from 'app/api/service/apiService';
+import commonService from 'app/core/service/commonService';
 import SelectField from 'app/common/components/Form/SelectField';
 import { Categories } from 'app/api/model/get/getQuizCategory';
-import { Results } from 'app/api/model/get/getQuizQuestions';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 import { AiFillStar } from "react-icons/ai";
-import { DifficultyTextEnum } from 'app/core/enum/feature/Quiz';
-import { FormValues } from './types';
+import { DifficultyTextEnum, SelectFieldTextEnum } from 'app/core/enum/feature/Quiz';
+import { FormValues, Questions } from './types';
 
 const Quiz: React.FC = () => {
   const controls = useAnimation();
   const [options, setOptions] = useState<Categories[]>([]);
-  const [questions, setQuestions] = useState<Results[]>([]);
+  const [questions, setQuestions] = useState<Questions[]>([]);
   const optionsNumber: Categories[] = [
     {
       id: 9,
@@ -43,11 +43,25 @@ const Quiz: React.FC = () => {
       })
       if (response.length > 0) {
         controls.start('start');
-        setQuestions(response);
+        const responseUpdate: Questions[] = response.map((item, index) => {
+          const answer = commonService.decodeString(item.correct_answer)
+          const options = [
+            ...item.incorrect_answers.map(a => commonService.decodeString(a)), 
+            answer
+          ]
+          return {
+            id: index,
+            difficulty: item.difficulty,
+            question: commonService.decodeString(item.question),
+            answer: item.answer,
+            options: options
+          }
+        })
+        setQuestions(responseUpdate);
       }
     }
   });
-
+  
   /* initialize the options */
   useEffect(() => {
     (async () => {
@@ -57,7 +71,7 @@ const Quiz: React.FC = () => {
       }
     })();
   }, []);
-  console.log('questions', questions);
+
   /* framer-motion */
   const variants = {
     start: {
@@ -77,11 +91,11 @@ const Quiz: React.FC = () => {
   /* select field */
   const handleSelectChange = (value: number, type: string) => {
     switch (type) {
-      case ('category'): {
+      case (SelectFieldTextEnum.Category): {
         formik.setFieldValue('category', value);
         break;
       }
-      case ('amount'): {
+      case (SelectFieldTextEnum.Amount): {
         formik.setFieldValue('amount', value);
         break;
       }

@@ -7,6 +7,7 @@ export interface Results {
   correct_answer: string;
   difficulty: string;
   incorrect_answers: string[];
+  answer: string;
   question: string;
   type: string;
 }
