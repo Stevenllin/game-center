@@ -1,4 +1,6 @@
 import React from 'react';
+import { ROUTES } from 'app/core/router/routerPath';
+import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'app/store/types';
@@ -11,12 +13,31 @@ import { NavigationStateValuesEnum } from 'app/core/enum/element/navigationState
 import { setGlobalNavigationState } from 'app/store/global/action';
 
 const Navigation: React.FC = () => {
+  const routerHistory = useHistory();
   const navigationState = useSelector((state: RootState) => state.global.navigationState);
   const reduxDispatch = useDispatch();
   /**
    * @description 
   */
    const handleSetNavigationState = (value: NavigationStateValuesEnum) => {
+    switch (value) {
+      case (NavigationStateValuesEnum.Quiz): {
+        routerHistory.push(ROUTES.FEATURES__QUIZ);
+        break;
+      }
+      case (NavigationStateValuesEnum.OXO): {
+        routerHistory.push(ROUTES.FEATURES__OXO);
+        break;
+      }
+      case (NavigationStateValuesEnum.TWO): {
+        routerHistory.push(ROUTES.FEATURES__2048);
+        break;
+      }
+      case (NavigationStateValuesEnum.Hang): {
+        routerHistory.push(ROUTES.FEATURES__HANG);
+        break;
+      }
+    }
     reduxDispatch(setGlobalNavigationState(value));
   }
   return (

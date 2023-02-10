@@ -1,8 +1,9 @@
 import React from 'react';
 
 const OXO: React.FC = () => {
+  console.log('23', 123);
   return (
-    <div>123</div>
+    <div className="color-white">123</div>
   )
 }
 
