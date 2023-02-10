@@ -6,6 +6,8 @@ import { Results } from 'app/api/model/get/getQuizQuestions';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
+import { AiFillStar } from "react-icons/ai";
+import { DifficultyTextEnum } from 'app/core/enum/Quiz';
 import { FormValues } from './types';
 
 const Quiz: React.FC = () => {
@@ -24,12 +26,9 @@ const Quiz: React.FC = () => {
     {
       id: 25,
       name: '25'
-    },
-    {
-      id: 36,
-      name: '36'
     }
   ]
+  /* initialize the form */
   const formik = useFormik<FormValues>({
     initialValues: {
       category: 1,
@@ -49,6 +48,7 @@ const Quiz: React.FC = () => {
     }
   });
 
+  /* initialize the options */
   useEffect(() => {
     (async () => {
       const response = await apiService.getQuizCategory({});
@@ -57,7 +57,7 @@ const Quiz: React.FC = () => {
       }
     })();
   }, []);
-
+  console.log('questions', questions);
   /* framer-motion */
   const variants = {
     start: {
@@ -90,6 +90,7 @@ const Quiz: React.FC = () => {
   
   /* styled-component */
   const QuizItem = styled.div`
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(${props => props.theme.size}, 1fr);
   `
@@ -139,14 +140,53 @@ const Quiz: React.FC = () => {
       {
         questions.length > 0 && (
           <motion.div
+            className="h-100"
             initial={{ y: -100, opacity: 0, display: 'none' }}
             animate={{ y: 0, opacity: 1, display: 'block' }}
-            transition={{ delay: 1.5 }}
+            transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
           >
             <QuizItem>
               {
                 questions.map((item, index) => (
-                  <div key={index} className="color-white">{item.question}</div>
+                  <div
+                    key={index}
+                    className="quiz-card"
+                  >
+                    <div className="d-flex justify-content-between">
+                      <p>{index + 1}</p>
+                      <p>Difficulty:
+                        {
+                          item.difficulty === DifficultyTextEnum.Easy && (
+                            <span className="ms-3">
+                              <AiFillStar />
+                            </span>
+                          )
+                        }
+                        {
+                          item.difficulty === DifficultyTextEnum.Medium && (
+                            <span
+                              className="ms-3"
+                            >
+                              <AiFillStar />
+                              <AiFillStar />
+                            </span>
+                          )
+                        }
+                        {
+                          item.difficulty === DifficultyTextEnum.Hard && (
+                            <span
+                              className="ms-3"
+                            >
+                              <AiFillStar />
+                              <AiFillStar />
+                              <AiFillStar />
+                            </span>
+                          )
+                        }
+                      </p>
+                    </div>
+                    <p>{item.question}</p>
+                  </div>
                 ))
               }
             </QuizItem>
