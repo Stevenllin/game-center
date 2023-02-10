@@ -1,0 +1,26 @@
+.oxo-container {
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.oxo-background {
+  display: grid;
+  margin: 0;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 30px;
+  width: 800px;
+  height: 800px;
+  border-radius: $border-radius-oxo;
+  background-color: $color__minior;
+  opacity: 0.3;
+
+}
+
+.oxo-item {
+  background: $color-disabled;
+  border-radius: $border-radius-oxo-item;
+}

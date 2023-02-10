@@ -1,4 +1,4 @@
-import { StorageDefines, StorageItem } from 'app/core/model/storage';
+import { StorageDefines } from 'app/core/model/storage';
 import { StorageKeysEnum, StorageTypesEnum } from 'app/core/enum/storage';
 
 /**
