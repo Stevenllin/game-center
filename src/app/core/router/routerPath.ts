@@ -12,5 +12,5 @@ export enum ROUTES {
   /** Hang */
   FEATURES__HANG = '/hang',
   /** 2048 */
-  FEATURES__2048 = '/2048'
+  FEATURES__TZFE = '/2048'
 }

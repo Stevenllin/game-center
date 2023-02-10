@@ -1,4 +1,6 @@
 import React from 'react';
+import storageService from 'app/core/service/storageService';
+import { StorageKeysEnum } from 'app/core/enum/storage';
 import { ROUTES } from 'app/core/router/routerPath';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
@@ -22,6 +24,7 @@ const Navigation: React.FC = () => {
    const handleSetNavigationState = (value: NavigationStateValuesEnum) => {
     switch (value) {
       case (NavigationStateValuesEnum.Quiz): {
+
         routerHistory.push(ROUTES.FEATURES__QUIZ);
         break;
       }
@@ -30,7 +33,7 @@ const Navigation: React.FC = () => {
         break;
       }
       case (NavigationStateValuesEnum.TWO): {
-        routerHistory.push(ROUTES.FEATURES__2048);
+        routerHistory.push(ROUTES.FEATURES__TZFE);
         break;
       }
       case (NavigationStateValuesEnum.Hang): {
@@ -38,6 +41,7 @@ const Navigation: React.FC = () => {
         break;
       }
     }
+    storageService.setItem(StorageKeysEnum.Navigation, value);
     reduxDispatch(setGlobalNavigationState(value));
   }
   return (

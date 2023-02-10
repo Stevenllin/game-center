@@ -1,7 +1,7 @@
 import { NavigationStateValuesEnum } from 'app/core/enum/element';
 /** Global state */
 export interface GlobalState {
-  navigationState: NavigationStateValuesEnum;
+  navigationState: NavigationStateValuesEnum | string;
 }
 
 /** Actions type constant */

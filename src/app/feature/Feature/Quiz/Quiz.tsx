@@ -7,7 +7,7 @@ import { Form, FormikProvider, useFormik } from 'formik';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 import { AiFillStar } from "react-icons/ai";
-import { DifficultyTextEnum } from 'app/core/enum/Quiz';
+import { DifficultyTextEnum } from 'app/core/enum/feature/Quiz';
 import { FormValues } from './types';
 
 const Quiz: React.FC = () => {

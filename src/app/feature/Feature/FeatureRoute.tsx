@@ -17,6 +17,11 @@ const FeaturesRoutes: React.FC = () => {
           path={ROUTES.FEATURES__OXO}
           component={React.lazy(() => import('./OXO'))}
         />
+        <Route
+          exact
+          path={ROUTES.FEATURES__TZFE}
+          component={React.lazy(() => import('./TZFE'))}
+        />
         <Redirect to={ROUTES.FEATURES__QUIZ} />
       </Switch>
     </React.Suspense>
