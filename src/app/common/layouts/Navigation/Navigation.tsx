@@ -6,10 +6,11 @@ import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'app/store/types';
-import { HiCreditCard } from "react-icons/hi2";
-import { FaRegCircle } from "react-icons/fa";
+import { RxQuestionMarkCircled } from "react-icons/rx";
+import { BiTired } from "react-icons/bi";
+import { BiX } from "react-icons/bi";
 import { BsGridFill } from "react-icons/bs";
-import { IoMan } from "react-icons/io5";
+
 import { motion } from "framer-motion";
 import { NavigationStateValuesEnum } from 'app/core/enum/element/navigationStateValuesEnum';
 import { setGlobalNavigationState } from 'app/store/global/action';
@@ -54,7 +55,7 @@ const Navigation: React.FC = () => {
             onClick={() => handleSetNavigationState(NavigationStateValuesEnum.Quiz)}
             whileHover={{ scale: 1.4, rotate: 360 }}
           >
-            <HiCreditCard />
+            <RxQuestionMarkCircled />
           </motion.button>
         </div>
         <div className="my-4">
@@ -64,7 +65,7 @@ const Navigation: React.FC = () => {
             onClick={() => handleSetNavigationState(NavigationStateValuesEnum.OXO)}
             whileHover={{ scale: 1.4, rotate: 360 }}
           >
-            <FaRegCircle />
+            <BiX />
           </motion.button>
         </div>
         <div className="my-4">
@@ -84,7 +85,7 @@ const Navigation: React.FC = () => {
             onClick={() => handleSetNavigationState(NavigationStateValuesEnum.Hang)}
             whileHover={{ scale: 1.4, rotate: 360 }}
           >
-            <IoMan />
+            <BiTired />
           </motion.button>
         </div>
       </div>
