@@ -12,6 +12,8 @@ import { FormValues, Questions } from './types';
 
 const Quiz: React.FC = () => {
   const controls = useAnimation();
+  const [seconds, setSeconds] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
   const [options, setOptions] = useState<Categories[]>([]);
   const [questions, setQuestions] = useState<Questions[]>([]);
   const optionsNumber: Categories[] = [
@@ -61,7 +63,6 @@ const Quiz: React.FC = () => {
       }
     }
   });
-  
   /* initialize the options */
   useEffect(() => {
     (async () => {
@@ -71,6 +72,21 @@ const Quiz: React.FC = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    const target = new Date (commonService.getQuizValidTime(3));
+    
+    const interval = setInterval(() => {
+      const current = new Date();
+      const difference = target.getTime() - current.getTime();
+      const minutesUpdate = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+      setMinutes(minutesUpdate)
+      const secondsUpdate = Math.floor((difference % (1000 * 60)) / (1000))
+      setSeconds(secondsUpdate);
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [questions])
 
   /* framer-motion */
   const variants = {
@@ -153,58 +169,74 @@ const Quiz: React.FC = () => {
       </motion.div>
       {
         questions.length > 0 && (
-          <motion.div
-            className="h-100"
-            initial={{ y: -100, opacity: 0, display: 'none' }}
-            animate={{ y: 0, opacity: 1, display: 'block' }}
-            transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
-          >
-            <QuizItem>
-              {
-                questions.map((item, index) => (
-                  <div
-                    key={index}
-                    className="quiz-card"
-                  >
-                    <div className="d-flex justify-content-between">
-                      <p>{index + 1}</p>
-                      <p>Difficulty:
-                        {
-                          item.difficulty === DifficultyTextEnum.Easy && (
-                            <span className="ms-3">
-                              <AiFillStar />
-                            </span>
-                          )
-                        }
-                        {
-                          item.difficulty === DifficultyTextEnum.Medium && (
-                            <span
-                              className="ms-3"
-                            >
-                              <AiFillStar />
-                              <AiFillStar />
-                            </span>
-                          )
-                        }
-                        {
-                          item.difficulty === DifficultyTextEnum.Hard && (
-                            <span
-                              className="ms-3"
-                            >
-                              <AiFillStar />
-                              <AiFillStar />
-                              <AiFillStar />
-                            </span>
-                          )
-                        }
-                      </p>
+          <div>
+            <motion.p
+
+              initial={{ y: -100, opacity: 0, display: 'none' }}
+              animate={{ y: 0, opacity: 1, display: 'block' }}
+              transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
+              className="timer mb-5"
+            >
+              <span>{minutes}:{seconds}</span>
+            </motion.p>
+            <motion.div
+              className="quiz-card-container"
+              initial={{ y: -100, opacity: 0, display: 'none' }}
+              animate={{ y: 0, opacity: 1, display: 'block' }}
+              transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
+            >
+              <QuizItem>
+                {
+                  questions.map((item, index) => (
+                    <div
+                      key={index}
+                      className="quiz-card"
+                    >
+                      <div className="d-flex justify-content-between">
+                        <p>{index + 1}</p>
+                        <p>Difficulty:
+                          {
+                            item.difficulty === DifficultyTextEnum.Easy && (
+                              <span className="ms-3">
+                                <AiFillStar />
+                              </span>
+                            )
+                          }
+                          {
+                            item.difficulty === DifficultyTextEnum.Medium && (
+                              <span
+                                className="ms-3"
+                              >
+                                <AiFillStar />
+                                <AiFillStar />
+                              </span>
+                            )
+                          }
+                          {
+                            item.difficulty === DifficultyTextEnum.Hard && (
+                              <span
+                                className="ms-3"
+                              >
+                                <AiFillStar />
+                                <AiFillStar />
+                                <AiFillStar />
+                              </span>
+                            )
+                          }
+                        </p>
+                      </div>
+                      <p>{item.question}</p>
+                      {
+                        item.options.map((option, index) => (
+                          <p key={index}>{index + 1}: {option}</p>
+                        ))
+                      }
                     </div>
-                    <p>{item.question}</p>
-                  </div>
-                ))
-              }
-            </QuizItem>
-          </motion.div>
+                  ))
+                }
+              </QuizItem>
+            </motion.div>
+          </div>
         )
       }
     </div>

@@ -25,3 +25,15 @@
     color: gold;
   }
 }
+
+.quiz-card-container {
+  height: 900px;
+  overflow: scroll;
+}
+
+.timer {
+  font-size: $font-lg;
+  text-align: center;
+  color: $color_white;
+  text-shadow: 1px 1px 8px white;
+}
