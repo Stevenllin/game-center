@@ -8,12 +8,15 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 import { AiFillStar } from "react-icons/ai";
 import { DifficultyTextEnum, SelectFieldTextEnum } from 'app/core/enum/feature/Quiz';
-import { FormValues, Questions } from './types';
+import { FormValues, Questions, QuizTimes } from './types';
 
 const Quiz: React.FC = () => {
   const controls = useAnimation();
-  const [seconds, setSeconds] = useState<number>(0);
-  const [minutes, setMinutes] = useState<number>(0);
+  const [quizTimeState, setQuizTimeState] = useState<QuizTimes>({
+    isValid: false,
+    seconds: 0,
+    minutes: 0
+  });
   const [options, setOptions] = useState<Categories[]>([]);
   const [questions, setQuestions] = useState<Questions[]>([]);
   const optionsNumber: Categories[] = [
@@ -74,19 +77,31 @@ const Quiz: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const target = new Date (commonService.getQuizValidTime(3));
+    const target = new Date (commonService.getQuizValidTime(0.3));
     
-    const interval = setInterval(() => {
-      const current = new Date();
-      const difference = target.getTime() - current.getTime();
-      const minutesUpdate = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
-      setMinutes(minutesUpdate)
-      const secondsUpdate = Math.floor((difference % (1000 * 60)) / (1000))
-      setSeconds(secondsUpdate);
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [questions])
+    if (!quizTimeState.isValid) {
+      const interval = setInterval(() => {
+        const current = new Date();
+        const difference = target.getTime() - current.getTime();
+        const minutesUpdate = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+        const secondsUpdate = Math.floor((difference % (1000 * 60)) / (1000))
+        if (minutesUpdate >= 0 && secondsUpdate >= 0) {
+          setQuizTimeState({
+            minutes: minutesUpdate,
+            seconds: secondsUpdate,
+            isValid: false
+          })
+        } else {
+          setQuizTimeState({
+            minutes: 0,
+            seconds: 0,
+            isValid: true
+          })
+        }
+      }, 1000)
+      return () => clearInterval(interval)
+    }
+  }, [questions, quizTimeState.isValid])
 
   /* framer-motion */
   const variants = {
@@ -171,13 +186,16 @@ const Quiz: React.FC = () => {
         questions.length > 0 && (
           <div>
             <motion.p
-
               initial={{ y: -100, opacity: 0, display: 'none' }}
               animate={{ y: 0, opacity: 1, display: 'block' }}
               transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
               className="timer mb-5"
             >
-              <span>{minutes}:{seconds}</span>
+              {
+                quizTimeState.minutes === 0 && quizTimeState.seconds <= 10 && (
+                  <span className="quiz-text-danger">{quizTimeState.minutes}:{quizTimeState.seconds}</span>
+                ) || <span>{quizTimeState.minutes}:{quizTimeState.seconds}</span>
+              }
             </motion.p>
             <motion.div
               className="quiz-card-container"

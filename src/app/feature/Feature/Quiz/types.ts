@@ -10,3 +10,9 @@ export interface Questions {
   answer: string;
   options: string[];
 }
+
+export interface QuizTimes {
+  isValid: boolean;
+  seconds: number;
+  minutes: number;
+}
