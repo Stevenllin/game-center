@@ -1,0 +1,136 @@
+.hang-container {
+  position: relative;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hang-wrapper {
+  position: relative;
+  width: 320px;
+  height: 500px;
+  border-radius: $border-radius-main;
+}
+
+.hang-device1 {
+  position: absolute;
+  height: 50px;
+  width: 5px;
+  background: $color__minior;
+  top: 0;
+  right: 0;
+  border-radius: $border-radius-main;
+}
+
+.hang-device2 {
+  height: 5px;
+  width: 200px;
+  background: $color__minior;
+  margin-left: 120px;
+  border-radius: $border-radius-main;
+}
+
+.hang-device3 {
+  height: 400px;
+  width: 5px;
+  background: $color__minior;
+  margin-left: 120px;
+  border-radius: $border-radius-main;
+}
+
+.hang-device4 {
+  height: 5px;
+  width: 250px;
+  background: $color__minior;
+  border-radius: $border-radius-main;
+}
+
+.hang-head {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  border: 5px solid $color__minior;
+  position: absolute;
+  top: 50px;
+  right: -22px;
+}
+
+.hang-body {
+  width: 5px;
+  height: 100px;
+  background: $color__minior;
+  position: absolute;
+  top: 100px;
+  right: 0;
+}
+
+.hang-right-arm {
+  width: 50px;
+  height: 5px;
+  background: $color__minior;
+  position: absolute;
+  top: 110px;
+  right: -45px;
+  rotate: -30deg;
+}
+
+.hang-left-arm {
+  width: 50px;
+  height: 5px;
+  background: $color__minior;
+  position: absolute;
+  top: 110px;
+  right: 2px;
+  rotate: 30deg;
+}
+
+.hang-right-leg {
+  width: 80px;
+  height: 5px;
+  background: $color__minior;
+  position: absolute;
+  top: 225px;
+  right: -58px;
+  rotate: 60deg;
+}
+
+.hang-left-leg {
+  width: 80px;
+  height: 5px;
+  background: $color__minior;
+  position: absolute;
+  top: 225px;
+  right: -16px;
+  rotate: -60deg;
+}
+
+.hang-word {
+  display: flex;
+  gap: .25em;
+  font-size: 3em;
+  text-transform: uppercase;
+}
+
+.hang-word-item {
+  color: $color-blue;
+  border-bottom: 3px solid $color-disabled;
+}
+
+.hang-keyboard {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+  font-size: $font-md;
+  color: $color-blue;
+}
+
+.hang-keyboard-item {
+  display: flex;
+  justify-content: center;
+  background-color: $color__minior;
+  border-radius: $border-radius-minor;
+  cursor: pointer;
+}

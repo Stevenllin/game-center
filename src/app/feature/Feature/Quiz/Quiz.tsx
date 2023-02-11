@@ -192,8 +192,10 @@ const Quiz: React.FC = () => {
               className="timer mb-5"
             >
               {
+                // eslint-disable-next-line no-mixed-operators
                 quizTimeState.minutes === 0 && quizTimeState.seconds <= 10 && (
                   <span className="quiz-text-danger">{quizTimeState.minutes}:{quizTimeState.seconds}</span>
+                // eslint-disable-next-line no-mixed-operators
                 ) || <span>{quizTimeState.minutes}:{quizTimeState.seconds}</span>
               }
             </motion.p>
