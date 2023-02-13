@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import words from './wordList.json';
 import { Keyboard } from './data';
 
@@ -32,7 +33,7 @@ const Hang: React.FC = () => {
   const handleGetRandomWord = () => {
     return words[Math.floor(Math.random() * words.length)]
   }
-  const [wordToGuess, setWordToGuess] = useState<string>(handleGetRandomWord);
+  const [wordToGuess, setWordToGuess] = useState<string>('test');
   const [guessedWord, setGuessedWord] = useState<string[]>([]);
 
   const incorrectLetter = guessedWord.filter(letter => !wordToGuess.includes(letter));
@@ -62,6 +63,11 @@ const Hang: React.FC = () => {
     }
   }, [guessedWord, isLoser, isWinner])
 
+  const handleRestartGame = () => {
+    setGuessedWord([])
+    setWordToGuess(handleGetRandomWord())
+  }
+
   return (
     <div id="hang" className="hang-container">
       {/** hangman section */}
@@ -73,11 +79,72 @@ const Hang: React.FC = () => {
         <div className="hang-device4" />
       </div>
 
+      {
+        isLoser && (
+          <motion.div
+            initial={{ y: 20, opacity: 0, display: 'none' }}
+            animate={{ y: 0, opacity: 1, display: 'block' }}
+            transition={{ ease: [0, 0.71, 0.2, 1.01] , duration: 0.5 }}
+            className="mb-5"
+          >
+            <motion.button
+              type="button"
+              className="button-main"
+              whileHover={{ scale: 1.2, transition: {
+                default: {
+                  duration: 0.3,
+                  ease: [0, 0.71, 0.2, 1.01]
+                },
+                scale: {
+                  type: "spring",
+                  damping: 4,
+                  stiffness: 100,
+                  restDelta: 0.001
+                }
+              } }}
+              onClick={handleRestartGame}
+            >
+              Sorry, Try again?
+            </motion.button>
+          </motion.div>
+        )
+      }
+
+      {
+        isWinner && (
+          <motion.div
+            initial={{ y: 20, opacity: 0, display: 'none' }}
+            animate={{ y: 0, opacity: 1, display: 'block' }}
+            transition={{ ease: [0, 0.71, 0.2, 1.01] , duration: 0.5 }}
+            className="mb-5 "
+          >
+            <motion.button
+              type="button"
+              className="button-main"
+              whileHover={{ scale: 1.2, transition: {
+                default: {
+                  duration: 0.3,
+                  ease: [0, 0.71, 0.2, 1.01]
+                },
+                scale: {
+                  type: "spring",
+                  damping: 4,
+                  stiffness: 100,
+                  restDelta: 0.001
+                }
+              } }}
+              onClick={handleRestartGame}
+            >
+              Congratulations!!
+            </motion.button>
+          </motion.div>
+        )
+      }
+
       {/** hangman word */}
       <div className="hang-word">
         {wordToGuess.split('').map((letter, index) => {
           const isLose = !guessedWord.includes(letter) && isLoser
-          console.log('isLose', isLose);
           return (
             <span key={index} className="hang-word-item d-flex justify-content-center">
               <span
