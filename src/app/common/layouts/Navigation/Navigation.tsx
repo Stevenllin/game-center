@@ -10,9 +10,8 @@ import { RxQuestionMarkCircled } from "react-icons/rx";
 import { BiTired } from "react-icons/bi";
 import { BiX } from "react-icons/bi";
 import { BsGridFill } from "react-icons/bs";
-
 import { motion } from "framer-motion";
-import { NavigationStateValuesEnum } from 'app/core/enum/element/navigationStateValuesEnum';
+import { NavigationStateValuesEnum } from 'app/core/enum/element/navigation';
 import { setGlobalNavigationState } from 'app/store/global/action';
 
 const Navigation: React.FC = () => {

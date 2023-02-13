@@ -4,9 +4,17 @@ import { motion } from 'framer-motion';
 import { IoClose } from "react-icons/io5";
 import { BiCircle } from "react-icons/bi";
 import { OXOValuesEnum } from "app/core/enum/feature/OXO";
+import { useDispatch } from 'react-redux';
+import { RootState } from 'app/store/types';
+import { useSelector } from 'react-redux';
+import { setDialogVisibleAction } from 'app/store/element/action';
+import { DialogNamesEnum } from 'app/core/enum/element/dialog';
 import { OXOBoard } from './types';
 
 const OXO: React.FC = () => {
+  const dialogState = useSelector((state: RootState) => state.elements.dialogs);
+  const reduxDispatch = useDispatch();
+  console.log('dialogState', dialogState);
   const [board, setBoard] = useState<OXOBoard>({
     round: OXOValuesEnum.O,
     status: ['', '', '', '', '', '', '', '', ''],
@@ -82,6 +90,7 @@ const OXO: React.FC = () => {
         isEnd: isWin,
         winner: board.round === OXOValuesEnum.O ? OXOValuesEnum.X : OXOValuesEnum.O
       })
+      reduxDispatch(setDialogVisibleAction(DialogNamesEnum.OXOGameDialog, true));
     } else if (board.status.filter(item => item === '').length === 0) {
       setBoard({
         round: board.round,
@@ -89,6 +98,7 @@ const OXO: React.FC = () => {
         isEnd: true,
         winner: ''
       })
+      reduxDispatch(setDialogVisibleAction(DialogNamesEnum.OXOGameDialog, true));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, board.status)

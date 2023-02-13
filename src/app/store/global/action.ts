@@ -1,5 +1,5 @@
 import { GLOBAL__NAVIGATION_STATE } from './types';
-import { NavigationStateValuesEnum } from 'app/core/enum/element/navigationStateValuesEnum';
+import { NavigationStateValuesEnum } from 'app/core/enum/element/navigation/navigationStateValuesEnum';
 
 /**
  * @description set the Navigation State

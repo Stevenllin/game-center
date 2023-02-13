@@ -1,4 +1,4 @@
-import { NavigationStateValuesEnum } from 'app/core/enum/element';
+import { NavigationStateValuesEnum } from 'app/core/enum/element/navigation';
 /** Global state */
 export interface GlobalState {
   navigationState: NavigationStateValuesEnum | string;
