@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { motion } from 'framer-motion';
 import { IoClose } from "react-icons/io5";
@@ -10,9 +10,10 @@ const OXO: React.FC = () => {
   const [board, setBoard] = useState<OXOBoard>({
     round: OXOValuesEnum.O,
     status: ['', '', '', '', '', '', '', '', ''],
-    isEnd: false
+    isEnd: false,
+    winner: ''
   });
-  console.log('board', board);
+
   /* oxo-background animation */
   const background = {
     hidden: { opacity: 1, scale: 0 },
@@ -34,9 +35,52 @@ const OXO: React.FC = () => {
       opacity: 1
     }
   };
-
+  console.log('board', board);
   const handleCheckTargetIsAlreadyExist = (index: number) => {
     return board.status[index] === '' ? false : true;
+  }
+
+  useEffect(() => {
+    let isWin = false;
+    const currentStatus = _.cloneDeep(board.status);
+    const currentStatus2D = [currentStatus.splice(0, 3), currentStatus.splice(0, 3), currentStatus.splice(0, 3)];
+    /** check the row */
+    for (let i = 0; i < currentStatus2D.length; i++) {
+      if (handleCheckTarget(currentStatus2D[i])) {
+        isWin = true;
+      }
+    }
+    /** check the column */
+    for (let i = 0; i < 3; i++) {
+      const target = [currentStatus2D[0][i], currentStatus2D[1][i], currentStatus2D[2][i]]
+      if (handleCheckTarget(target)) {
+        isWin = true
+      }
+    }
+    /** check the diagonal */
+    if (handleCheckTarget([currentStatus2D[0][0], currentStatus2D[1][1], currentStatus2D[2][2]])) {
+      isWin = true
+    }
+    if (handleCheckTarget([currentStatus2D[0][2], currentStatus2D[1][1], currentStatus2D[2][0]])) {
+      isWin = true
+    }
+    /** set the board state */
+    if (isWin) {
+      setBoard({
+        round: board.round,
+        status: board.status,
+        isEnd: isWin,
+        winner: board.round === OXOValuesEnum.O ? OXOValuesEnum.X : OXOValuesEnum.O
+      })
+    }
+    console.log('isWin', isWin);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, board.status)
+
+  const handleCheckTarget = (array: string[]) => {
+    const target = board.round === OXOValuesEnum.O ? OXOValuesEnum.X : OXOValuesEnum.O;
+    const result = array.filter(item => item === target).length === 3 ? true : false;
+    return result
   }
 
   /* click the item */
@@ -50,7 +94,8 @@ const OXO: React.FC = () => {
           setBoard({
             round: OXOValuesEnum.X,
             status: statusUpdate,
-            isEnd: board.isEnd
+            isEnd: board.isEnd,
+            winner: board.winner
           })
           break;
         }
@@ -58,7 +103,8 @@ const OXO: React.FC = () => {
           setBoard({
             round: OXOValuesEnum.O,
             status: statusUpdate,
-            isEnd: board.isEnd
+            isEnd: board.isEnd,
+            winner: board.winner
           })
           break;
         }

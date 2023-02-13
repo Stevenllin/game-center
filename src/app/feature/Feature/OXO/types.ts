@@ -4,4 +4,5 @@ export interface OXOBoard {
   round: OXOValuesEnum;
   status: string[] | OXOValuesEnum[];
   isEnd: boolean;
+  winner: string;
 }
