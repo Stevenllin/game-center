@@ -33,7 +33,7 @@ const Hang: React.FC = () => {
   const handleGetRandomWord = () => {
     return words[Math.floor(Math.random() * words.length)]
   }
-  const [wordToGuess, setWordToGuess] = useState<string>('test');
+  const [wordToGuess, setWordToGuess] = useState<string>(handleGetRandomWord);
   const [guessedWord, setGuessedWord] = useState<string[]>([]);
 
   const incorrectLetter = guessedWord.filter(letter => !wordToGuess.includes(letter));

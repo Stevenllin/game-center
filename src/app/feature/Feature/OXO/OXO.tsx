@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
+import _ from 'lodash';
 import { motion } from 'framer-motion';
+import { IoClose } from "react-icons/io5";
+import { FiCircle } from "react-icons/fi";
+import { OXOValuesEnum } from "app/core/enum/feature/OXO";
 import { OXOBoard } from './types';
 
 const OXO: React.FC = () => {
   const [board, setBoard] = useState<OXOBoard>({
-    status: ['', '', '', '', '', '', '', '', '']
+    round: OXOValuesEnum.O,
+    status: ['', '', '', '', '', '', '', '', ''],
+    isEnd: false
   });
   console.log('board', board);
   /* oxo-background animation */
@@ -29,9 +35,35 @@ const OXO: React.FC = () => {
     }
   };
 
+  const handleCheckTargetIsAlreadyExist = (index: number) => {
+    return board.status[index] === '' ? false : true;
+  }
+
   /* click the item */
   const handleClickItem = (index: number) => {
-    console.log('index', index);
+    if (!handleCheckTargetIsAlreadyExist(index)) {
+      const statusUpdate = _.cloneDeep(board.status)
+      statusUpdate[index] = board.round
+
+      switch (board.round) {
+        case (OXOValuesEnum.O): {
+          setBoard({
+            round: OXOValuesEnum.X,
+            status: statusUpdate,
+            isEnd: board.isEnd
+          })
+          break;
+        }
+        case (OXOValuesEnum.X): {
+          setBoard({
+            round: OXOValuesEnum.O,
+            status: statusUpdate,
+            isEnd: board.isEnd
+          })
+          break;
+        }
+      }
+    }
   }
 
   return (
@@ -43,12 +75,20 @@ const OXO: React.FC = () => {
         animate="visible"
       >
         {board.status.map((oxo, index) => (
-          <motion.div key={index} className="oxo-item" variants={item} onClick={() => handleClickItem(index)} />
+          <motion.div key={index} className="oxo-item" variants={item} onClick={() => handleClickItem(index)}>
+            {
+              oxo === OXOValuesEnum.O && (
+                <FiCircle />
+              )
+            }
+            {
+              oxo === OXOValuesEnum.X && (
+                <IoClose />
+              )
+            }
+          </motion.div>
         ))}
       </motion.div>
-      <div className="oxo-label">
-        1
-      </div>
     </div>
   )
 }

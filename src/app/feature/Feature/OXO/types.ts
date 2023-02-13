@@ -1,3 +1,7 @@
+import { OXOValuesEnum } from "app/core/enum/feature/OXO";
+
 export interface OXOBoard {
-  status: string[];
+  round: OXOValuesEnum;
+  status: string[] | OXOValuesEnum[];
+  isEnd: boolean;
 }

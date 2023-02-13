@@ -1,6 +1,6 @@
 export enum OXOValuesEnum {
   /* O */
-  O = '1',
+  O = 'O',
   /* X */
-  X = '2'
+  X = 'X'
 }

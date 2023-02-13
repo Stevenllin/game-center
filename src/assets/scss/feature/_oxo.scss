@@ -22,9 +22,20 @@
 }
 
 .oxo-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 227px;
+  height: 227px;
   cursor: pointer;
   background: $color-disabled;
   border-radius: $border-radius-oxo-item;
+
+  & svg {
+    width: 108px;
+    height: 108px;
+    color: $color-blue;
+  }
 }
 
 .oxo-label {
