@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import words from './wordList.json';
 import { Keyboard } from './data';
 
@@ -32,23 +32,25 @@ const Hang: React.FC = () => {
   const handleGetRandomWord = () => {
     return words[Math.floor(Math.random() * words.length)]
   }
-  const [wordToGuess, setWordToGuess] = useState<string>('test');
+  const [wordToGuess, setWordToGuess] = useState<string>(handleGetRandomWord);
   const [guessedWord, setGuessedWord] = useState<string[]>([]);
+
   const incorrectLetter = guessedWord.filter(letter => !wordToGuess.includes(letter));
+  const isLoser = incorrectLetter.length >= 6
+  const isWinner = wordToGuess.split("").every(letter => guessedWord.includes(letter))
 
-  console.log('wordToGuess', wordToGuess);
-
-  const handleAddGuessedLetter = (letter: string) => {
-    if (guessedWord.includes(letter)) return
-
-    setGuessedWord(currentLetter => [...currentLetter, letter]);
-  }
-
+  const handleAddGuessedLetter = useCallback(
+    (letter: string) => {
+      if (guessedWord.includes(letter)) return
+    
+      setGuessedWord(currentLetter => [...currentLetter, letter]);
+    }, [guessedWord]
+  )
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const key = e.key;
-      if (!key.match(/^[a-z]$/)) return
+      if (!key.match(/^[a-z]$/) || isLoser || isWinner) return
       e.preventDefault()
       handleAddGuessedLetter(key)
     }
@@ -58,7 +60,7 @@ const Hang: React.FC = () => {
     return () => {
       document.removeEventListener('keypress', handler)
     }
-  }, [guessedWord])
+  }, [guessedWord, isLoser, isWinner])
 
   return (
     <div id="hang" className="hang-container">
@@ -73,27 +75,42 @@ const Hang: React.FC = () => {
 
       {/** hangman word */}
       <div className="hang-word">
-        {wordToGuess.split('').map((letter, index) => (
-          <span key={index} className="hang-word-item d-flex justify-content-center">
-            <span
-              style={{
-                visibility: guessedWord.includes(letter) ? 'visible' : 'hidden'
-              }}
-            >
-              {letter}
+        {wordToGuess.split('').map((letter, index) => {
+          const isLose = !guessedWord.includes(letter) && isLoser
+          console.log('isLose', isLose);
+          return (
+            <span key={index} className="hang-word-item d-flex justify-content-center">
+              <span
+                style={{
+                  visibility: guessedWord.includes(letter) || isLose ? 'visible' : 'hidden',
+                }}
+                className={`${isLose ? 'isLose': ''}`}
+              >
+                {letter}
+              </span>
             </span>
-          </span>
-        ))}
+          )
+        })}
       </div>
 
       {/** hangman keyboard */}
       <div className="hang-keyboard mt-5">
         {
-          Keyboard.map((key, index) => (
-            <div key={index} className="hang-keyboard-item p-4">
-              <button>{key}</button>
-            </div>
-          ))
+          Keyboard.map((key, index) => {
+            const isInactive = incorrectLetter.includes(key);
+            const inActive = guessedWord.filter(letter => wordToGuess.includes(letter)).includes(key);
+            return (
+              <button
+                key={key}
+                type="button"
+                className={`hang-keyboard-item p-4 ${inActive ? 'active' : ''} ${isInactive ? 'inactive' : ''}`}
+                onClick={() => handleAddGuessedLetter(key)}
+                disabled={inActive || isInactive || isLoser || isWinner}
+              >
+                {key}
+              </button>
+            )
+          })
         }
       </div>
     </div>

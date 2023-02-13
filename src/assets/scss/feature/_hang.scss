@@ -115,8 +115,13 @@
 }
 
 .hang-word-item {
+  width: 40px;
   color: $color-blue;
   border-bottom: 3px solid $color-disabled;
+
+  .isLose {
+    color: $color-disabled;
+  }
 }
 
 .hang-keyboard {
@@ -124,7 +129,7 @@
   grid-template-columns: repeat(12, 1fr);
   gap: 1.5rem;
   font-size: $font-md;
-  color: $color-blue;
+  color: $color-disabled;
 }
 
 .hang-keyboard-item {
@@ -133,4 +138,20 @@
   background-color: $color__minior;
   border-radius: $border-radius-minor;
   cursor: pointer;
+
+  &:hover {
+    color: $color-blue;
+  }
+
+  &.active {
+    color: $color-blue;
+    background-color: $color__main;
+  }
+
+  &.inactive {
+    color: $color__main;
+    background-color: $color__main;
+  }
 }
+
+
