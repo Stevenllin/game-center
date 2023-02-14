@@ -26,6 +26,23 @@
   }
 }
 
+.quiz-item {
+  height: 100%;
+  display: grid;
+
+  &.repeat-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &.repeat-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &.repeat-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 .quiz-card-container {
   height: 900px;
   overflow: scroll;

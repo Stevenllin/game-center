@@ -6,7 +6,6 @@ import RadioField from 'app/common/components/Form/RadioField';
 import { Categories } from 'app/api/model/get/getQuizCategory';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { motion, useAnimation } from 'framer-motion';
-import styled from 'styled-components';
 import { AiFillStar } from "react-icons/ai";
 import { DifficultyTextEnum, SelectFieldTextEnum } from 'app/core/enum/feature/Quiz';
 import { SearchFormValues, QuizFormValues, Questions, QuizTimes } from './types';
@@ -76,7 +75,6 @@ const Quiz: React.FC = () => {
       console.log('formValues', formValues);
     }
   })
-  console.log('quizFormik', quizFormik.values);
   /* initialize the options */
   useEffect(() => {
     (async () => {
@@ -147,18 +145,7 @@ const Quiz: React.FC = () => {
   const handleRadioChange = (value: string, name: string) => {
     quizFormik.setFieldValue(name, value);
   }
-  
-  /* styled-component */
-  const QuizItem = styled.div`
-    height: 100%;
-    display: grid;
-    grid-template-columns: repeat(${props => props.theme.size}, 1fr);
-  `
-  QuizItem.defaultProps = {
-    theme: {
-      size: Math.sqrt(searchFormik.values.amount)
-    }
-  }
+
   return (
     <div id="quiz" className="quiz-container">
       <motion.div
@@ -221,7 +208,8 @@ const Quiz: React.FC = () => {
                 animate={{ y: 0, opacity: 1, display: 'block' }}
                 transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
               >
-                <QuizItem>
+                <div
+                  className={`quiz-item ${searchFormik.values.amount === 9 ? 'repeat-3' : '' } ${searchFormik.values.amount === 16 ? 'repeat-4' : '' } ${searchFormik.values.amount === 25 ? 'repeat-5' : '' }`}>
                   {
                     questions.map((item, index) => (
                       <div
@@ -266,7 +254,7 @@ const Quiz: React.FC = () => {
                       </div>
                     ))
                   }
-                </QuizItem>
+                </div>
               </motion.div>
             </Form>
           </FormikProvider>
