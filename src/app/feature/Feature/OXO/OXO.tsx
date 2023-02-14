@@ -8,13 +8,14 @@ import { useDispatch } from 'react-redux';
 import { RootState } from 'app/store/types';
 import { useSelector } from 'react-redux';
 import { setDialogVisibleAction } from 'app/store/element/action';
+import OXODialog from 'app/common/components/Dialogs/OXODiaglog';
 import { DialogNamesEnum } from 'app/core/enum/element/dialog';
 import { OXOBoard } from './types';
 
 const OXO: React.FC = () => {
   const dialogState = useSelector((state: RootState) => state.elements.dialogs);
   const reduxDispatch = useDispatch();
-  console.log('dialogState', dialogState);
+
   const [board, setBoard] = useState<OXOBoard>({
     round: OXOValuesEnum.O,
     status: ['', '', '', '', '', '', '', '', ''],
@@ -102,7 +103,7 @@ const OXO: React.FC = () => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, board.status)
-  console.log('board', board);
+
   const handleCheckTarget = (array: string[]) => {
     const target = board.round === OXOValuesEnum.O ? OXOValuesEnum.X : OXOValuesEnum.O;
     const result = array.filter(item => item === target).length === 3 ? true : false;
@@ -136,6 +137,16 @@ const OXO: React.FC = () => {
         }
       }
     }
+  }
+
+  const handleRestartGame = () => {
+    setBoard({
+      round: OXOValuesEnum.O,
+      status: ['', '', '', '', '', '', '', '', ''],
+      isEnd: false,
+      winner: ''
+    })
+    setResult([])
   }
 
   return (
@@ -180,6 +191,11 @@ const OXO: React.FC = () => {
           </div>
         </div>
       </div>
+      <OXODialog
+        winner={board.winner}
+        visible={dialogState.OXOGameDialog.visible}
+        onConfirm={handleRestartGame}
+      />
     </div>
   )
 }

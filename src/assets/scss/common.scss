@@ -4,7 +4,9 @@
 @import "./base/variable";
 @import "./base/reset";
 @import "./navigation/menu";
-@import "./layouts//layouts.scss";
+@import "./dialog/dialog";
+@import "./dialog/oxo";
+@import "./layouts/layouts";
 @import "./Form/select";
 @import "./Form/button";
 @import "./feature/quiz";
