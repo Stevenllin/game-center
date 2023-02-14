@@ -1,0 +1,36 @@
+.radio-offset {
+  padding-bottom: 4px;
+}
+
+.radio-text {
+  color: $color-white;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.radio-text:before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 50%;
+  padding: 3.5px;
+  background-clip: content-box;
+  position: relative;
+  top: 4px;
+}
+
+input[type="radio"]:not(:checked) + .radio-text:before {
+  border-color: $color-disabled;
+}
+
+input[type="radio"]:checked + .radio-text:before {
+  border-color: $color-blue !important;
+  border-width: 6px;
+  background-color: $border-radius-main;
+}

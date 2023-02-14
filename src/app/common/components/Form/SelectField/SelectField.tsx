@@ -7,7 +7,7 @@ const SelectField: React.FC<SelectFieldProps> = (props) => {
   const field = useField(props.name);
 
   return (
-    <div className="select-01 w-100">
+    <div className="select w-100">
       <Select
         {...field}
         placeholder={props.placeholder}

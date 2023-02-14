@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import apiService from 'app/api/service/apiService';
 import commonService from 'app/core/service/commonService';
 import SelectField from 'app/common/components/Form/SelectField';
+import RadioField from 'app/common/components/Form/RadioField';
 import { Categories } from 'app/api/model/get/getQuizCategory';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 import { AiFillStar } from "react-icons/ai";
 import { DifficultyTextEnum, SelectFieldTextEnum } from 'app/core/enum/feature/Quiz';
-import { FormValues, Questions, QuizTimes } from './types';
+import { SearchFormValues, QuizFormValues, Questions, QuizTimes } from './types';
 
 const Quiz: React.FC = () => {
   const controls = useAnimation();
@@ -33,8 +34,8 @@ const Quiz: React.FC = () => {
       name: '25'
     }
   ]
-  /* initialize the form */
-  const formik = useFormik<FormValues>({
+  /* initialize the search form */
+  const searchFormik = useFormik<SearchFormValues>({
     initialValues: {
       category: 1,
       amount: 10
@@ -66,6 +67,16 @@ const Quiz: React.FC = () => {
       }
     }
   });
+  /** initialize the quiz form */
+  const quizFormik = useFormik<QuizFormValues>({
+    initialValues: {
+      answers: []
+    },
+    onSubmit: async (formValues) => {
+      console.log('formValues', formValues);
+    }
+  })
+  console.log('quizFormik', quizFormik.values);
   /* initialize the options */
   useEffect(() => {
     (async () => {
@@ -123,14 +134,18 @@ const Quiz: React.FC = () => {
   const handleSelectChange = (value: number, type: string) => {
     switch (type) {
       case (SelectFieldTextEnum.Category): {
-        formik.setFieldValue('category', value);
+        searchFormik.setFieldValue('category', value);
         break;
       }
       case (SelectFieldTextEnum.Amount): {
-        formik.setFieldValue('amount', value);
+        searchFormik.setFieldValue('amount', value);
         break;
       }
     }
+  }
+
+  const handleRadioChange = (value: string, name: string) => {
+    quizFormik.setFieldValue(name, value);
   }
   
   /* styled-component */
@@ -141,7 +156,7 @@ const Quiz: React.FC = () => {
   `
   QuizItem.defaultProps = {
     theme: {
-      size: Math.sqrt(formik.values.amount)
+      size: Math.sqrt(searchFormik.values.amount)
     }
   }
   return (
@@ -151,7 +166,7 @@ const Quiz: React.FC = () => {
         variants={variants}
         animate={controls}
       >
-        <FormikProvider value={formik}>
+        <FormikProvider value={searchFormik}>
           <Form>
             <div className="my-2">
               <SelectField placeholder="Choose your questions" name="category" options={options} onChange={handleSelectChange}/>
@@ -184,79 +199,77 @@ const Quiz: React.FC = () => {
       </motion.div>
       {
         questions.length > 0 && (
-          <div>
-            <motion.p
-              initial={{ y: -100, opacity: 0, display: 'none' }}
-              animate={{ y: 0, opacity: 1, display: 'block' }}
-              transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
-              className="timer mb-5"
-            >
-              {
-                // eslint-disable-next-line no-mixed-operators
-                quizTimeState.minutes === 0 && quizTimeState.seconds <= 10 && (
-                  <span className="quiz-text-danger">{quizTimeState.minutes}:{quizTimeState.seconds}</span>
-                // eslint-disable-next-line no-mixed-operators
-                ) || <span>{quizTimeState.minutes}:{quizTimeState.seconds}</span>
-              }
-            </motion.p>
-            <motion.div
-              className="quiz-card-container"
-              initial={{ y: -100, opacity: 0, display: 'none' }}
-              animate={{ y: 0, opacity: 1, display: 'block' }}
-              transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
-            >
-              <QuizItem>
+          <FormikProvider value={quizFormik}>
+            <Form>
+              <motion.p
+                initial={{ y: -100, opacity: 0, display: 'none' }}
+                animate={{ y: 0, opacity: 1, display: 'block' }}
+                transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
+                className="timer mb-5"
+              >
                 {
-                  questions.map((item, index) => (
-                    <div
-                      key={index}
-                      className="quiz-card"
-                    >
-                      <div className="d-flex justify-content-between">
-                        <p>{index + 1}</p>
-                        <p>Difficulty:
-                          {
-                            item.difficulty === DifficultyTextEnum.Easy && (
-                              <span className="ms-3">
-                                <AiFillStar />
-                              </span>
-                            )
-                          }
-                          {
-                            item.difficulty === DifficultyTextEnum.Medium && (
-                              <span
-                                className="ms-3"
-                              >
-                                <AiFillStar />
-                                <AiFillStar />
-                              </span>
-                            )
-                          }
-                          {
-                            item.difficulty === DifficultyTextEnum.Hard && (
-                              <span
-                                className="ms-3"
-                              >
-                                <AiFillStar />
-                                <AiFillStar />
-                                <AiFillStar />
-                              </span>
-                            )
-                          }
-                        </p>
-                      </div>
-                      <p>{item.question}</p>
-                      {
-                        item.options.map((option, index) => (
-                          <p key={index}>{index + 1}: {option}</p>
-                        ))
-                      }
-                    </div>
-                  ))
+                  // eslint-disable-next-line no-mixed-operators
+                  quizTimeState.minutes === 0 && quizTimeState.seconds <= 10 && (
+                    <span className="quiz-text-danger">{quizTimeState.minutes}:{quizTimeState.seconds}</span>
+                  // eslint-disable-next-line no-mixed-operators
+                  ) || <span>{quizTimeState.minutes}:{quizTimeState.seconds}</span>
                 }
-              </QuizItem>
-            </motion.div>
-          </div>
+              </motion.p>
+              <motion.div
+                className="quiz-card-container"
+                initial={{ y: -100, opacity: 0, display: 'none' }}
+                animate={{ y: 0, opacity: 1, display: 'block' }}
+                transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
+              >
+                <QuizItem>
+                  {
+                    questions.map((item, index) => (
+                      <div
+                        key={index}
+                        className="quiz-card"
+                      >
+                        <div className="d-flex justify-content-between">
+                          <p>{index + 1}</p>
+                          <p>Difficulty:
+                            {
+                              item.difficulty === DifficultyTextEnum.Easy && (
+                                <span className="ms-3">
+                                  <AiFillStar />
+                                </span>
+                              )
+                            }
+                            {
+                              item.difficulty === DifficultyTextEnum.Medium && (
+                                <span
+                                  className="ms-3"
+                                >
+                                  <AiFillStar />
+                                  <AiFillStar />
+                                </span>
+                              )
+                            }
+                            {
+                              item.difficulty === DifficultyTextEnum.Hard && (
+                                <span
+                                  className="ms-3"
+                                >
+                                  <AiFillStar />
+                                  <AiFillStar />
+                                  <AiFillStar />
+                                </span>
+                              )
+                            }
+                          </p>
+                        </div>
+                        <p>{item.question}</p>
+                        <RadioField name={`answers.${index}`} options={item.options} onChange={handleRadioChange} />
+                      </div>
+                    ))
+                  }
+                </QuizItem>
+              </motion.div>
+            </Form>
+          </FormikProvider>
         )
       }
     </div>

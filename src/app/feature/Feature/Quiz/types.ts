@@ -1,6 +1,10 @@
-export interface FormValues {
+export interface SearchFormValues {
   category: number;
   amount: number;
+}
+
+export interface QuizFormValues {
+  answers: string[]
 }
 
 export interface Questions {
