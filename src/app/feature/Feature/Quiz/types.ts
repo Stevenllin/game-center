@@ -15,6 +15,13 @@ export interface Questions {
   options: string[];
 }
 
+export interface Result {
+  question: string;
+  choose: string;
+  answer: string;
+  options: string[];
+}
+
 export interface QuizTimes {
   isStop: boolean;
   seconds: number;

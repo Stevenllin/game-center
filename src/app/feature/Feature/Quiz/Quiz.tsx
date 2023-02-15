@@ -14,7 +14,7 @@ import { AiFillStar } from "react-icons/ai";
 import QuizDialog from 'app/common/components/Dialogs/QuizDialog';
 import { DialogNamesEnum } from 'app/core/enum/element/dialog';
 import { DifficultyTextEnum, SelectFieldTextEnum } from 'app/core/enum/feature/Quiz';
-import { SearchFormValues, QuizFormValues, Questions, QuizTimes } from './types';
+import { SearchFormValues, QuizFormValues, Questions, Result, QuizTimes } from './types';
 
 const Quiz: React.FC = () => {
   const dialogState = useSelector((state: RootState) => state.elements.dialogs);
@@ -27,6 +27,7 @@ const Quiz: React.FC = () => {
   });
   const [options, setOptions] = useState<Categories[]>([]);
   const [questions, setQuestions] = useState<Questions[]>([]);
+  const [results, setResults] = useState<Result[]>([]);
   const optionsNumber: Categories[] = [
     {
       id: 9,
@@ -66,7 +67,7 @@ const Quiz: React.FC = () => {
             id: index,
             difficulty: item.difficulty,
             question: commonService.decodeString(item.question),
-            answer: item.answer,
+            answer: answer,
             options: options
           }
         })
@@ -94,7 +95,7 @@ const Quiz: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const target = new Date (commonService.getQuizValidTime(0.3));
+    const target = new Date (commonService.getQuizValidTime(0.1));
     
     if (!quizTimeState.isStop && questions.length !== 0) {
       const interval = setInterval(() => {
@@ -102,13 +103,14 @@ const Quiz: React.FC = () => {
         const difference = target.getTime() - current.getTime();
         const minutesUpdate = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
         const secondsUpdate = Math.floor((difference % (1000 * 60)) / (1000))
-        if (minutesUpdate >= 0 && secondsUpdate >= 0) {
+        if (minutesUpdate > 0 || secondsUpdate > 0) {
           setQuizTimeState({
             minutes: minutesUpdate,
             seconds: secondsUpdate,
             isStop: false
           })
-        } else {
+        }
+        if (minutesUpdate === 0 && secondsUpdate === 0) {
           setQuizTimeState({
             minutes: 0,
             seconds: 0,
@@ -122,6 +124,16 @@ const Quiz: React.FC = () => {
 
   useEffect(() => {
     if (quizTimeState.isStop) {
+      const result: Result[] = [];
+      for(let i = 0; i < questions.length; i++) {
+        result.push({
+          question: questions[i].question,
+          choose: quizFormik.values.answers[i] === undefined ? '' : quizFormik.values.answers[i],
+          answer: questions[i].answer,
+          options: questions[i].options
+        })
+      }
+      setResults(result);
       reduxDispatch(setDialogVisibleAction(DialogNamesEnum.QuizGameDialog, true));
     }
   }, [quizTimeState.isStop])
@@ -280,6 +292,7 @@ const Quiz: React.FC = () => {
       }
       <QuizDialog
         visible={dialogState.QuizGameDialog.visible}
+        questions={results}
         onConfirm={handleRestartGame}
       />
     </div>
