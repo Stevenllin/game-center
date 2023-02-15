@@ -4,12 +4,12 @@ import { DialogNamesEnum } from 'app/core/enum/element/dialog';
 import { QuizDialogProps } from './types';
 
 const QuizDialog: React.FC<QuizDialogProps> = (props) => {
-  console.log('props.questions', props.questions);
   return (
     <Dialog
       name={DialogNamesEnum.QuizGameDialog}
       title="Congratulations!!"
       visible={props.visible}
+      onConfirm={props.onConfirm}
     >
       <div className="quiz__dialog__answer p-3">
         {

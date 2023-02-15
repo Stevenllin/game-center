@@ -151,7 +151,15 @@ const Quiz: React.FC = () => {
       }
     },
     reset: {
-      rotate: 0
+      y: 40,
+      opacity: 1,
+      display: 'block',
+      transition: {
+        duration: 1.5
+      },
+      transitionEnd: {
+        display: 'block'
+      }
     }
   };
   /* select field */
@@ -173,8 +181,16 @@ const Quiz: React.FC = () => {
   }
 
   const handleRestartGame = () => {
-    console.log('restart the game')
+    setQuizTimeState({
+      isStop: false,
+      seconds: 0,
+      minutes: 0
+    })
+    setQuestions([])
+    quizFormik.resetForm()
+    controls.start('reset');
   }
+  console.log('searchFormik', searchFormik.values);
 
   return (
     <div id="quiz" className="quiz-container">
