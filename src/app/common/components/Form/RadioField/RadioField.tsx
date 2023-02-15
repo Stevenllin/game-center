@@ -8,8 +8,8 @@ const RadioField: React.FC<RadioFieldProps> = (props) => {
     <>
       {
         props.options.map((item, index) => (
-          <div className="radio-offset">
-            <label key={index} className="radio-label">
+          <div key={index} className="radio-offset">
+            <label className="radio-label">
               <input
                 type="radio"
                 {...field}

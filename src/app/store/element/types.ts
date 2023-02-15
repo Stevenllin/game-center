@@ -6,6 +6,7 @@ export interface ElementState {
 
 export interface DialogsState {
   OXOGameDialog: DialogState;
+  QuizGameDialog: DialogState;
 }
 
 export interface DialogState<T = DialogDataState> {

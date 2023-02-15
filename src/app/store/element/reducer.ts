@@ -5,6 +5,9 @@ const initialState: ElementState = {
   dialogs: {
     OXOGameDialog: {
       visible: false
+    },
+    QuizGameDialog: {
+      visible: false
     }
   }
 }

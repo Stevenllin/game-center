@@ -11,7 +11,7 @@ const OXODialog: React.FC<OXODialogProps> = (props) => {
       visible={props.visible}
       onConfirm={props.onConfirm}
     >
-      <div  className="d-flex justify-content-center oxo__dialog__content">
+      <div  className="oxo__dialog__content">
         {
           props.winner === '' && (
             <p>Nobody win this round</p>

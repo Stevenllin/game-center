@@ -16,7 +16,7 @@ export interface Questions {
 }
 
 export interface QuizTimes {
-  isValid: boolean;
+  isStop: boolean;
   seconds: number;
   minutes: number;
 }

@@ -1,3 +1,4 @@
 export enum DialogNamesEnum {
-  OXOGameDialog = 'OXOGameDialog'
+  OXOGameDialog = 'OXOGameDialog',
+  QuizGameDialog = 'QuizGameDialog'
 }

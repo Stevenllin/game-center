@@ -1,4 +1,6 @@
 .oxo__dialog__content {
+  display: flex;
+  justify-content: center;
   color: $color__minior;
   font-size: $font-md;
 }

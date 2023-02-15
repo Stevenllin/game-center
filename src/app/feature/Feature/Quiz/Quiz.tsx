@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import apiService from 'app/api/service/apiService';
 import commonService from 'app/core/service/commonService';
+import { RootState } from 'app/store/types';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setDialogVisibleAction } from 'app/store/element/action';
 import SelectField from 'app/common/components/Form/SelectField';
 import RadioField from 'app/common/components/Form/RadioField';
 import { Categories } from 'app/api/model/get/getQuizCategory';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { motion, useAnimation } from 'framer-motion';
 import { AiFillStar } from "react-icons/ai";
+import QuizDialog from 'app/common/components/Dialogs/QuizDialog';
+import { DialogNamesEnum } from 'app/core/enum/element/dialog';
 import { DifficultyTextEnum, SelectFieldTextEnum } from 'app/core/enum/feature/Quiz';
 import { SearchFormValues, QuizFormValues, Questions, QuizTimes } from './types';
 
 const Quiz: React.FC = () => {
+  const dialogState = useSelector((state: RootState) => state.elements.dialogs);
+  const reduxDispatch = useDispatch();
   const controls = useAnimation();
   const [quizTimeState, setQuizTimeState] = useState<QuizTimes>({
-    isValid: false,
+    isStop: false,
     seconds: 0,
     minutes: 0
   });
@@ -88,7 +96,7 @@ const Quiz: React.FC = () => {
   useEffect(() => {
     const target = new Date (commonService.getQuizValidTime(0.3));
     
-    if (!quizTimeState.isValid) {
+    if (!quizTimeState.isStop && questions.length !== 0) {
       const interval = setInterval(() => {
         const current = new Date();
         const difference = target.getTime() - current.getTime();
@@ -98,19 +106,25 @@ const Quiz: React.FC = () => {
           setQuizTimeState({
             minutes: minutesUpdate,
             seconds: secondsUpdate,
-            isValid: false
+            isStop: false
           })
         } else {
           setQuizTimeState({
             minutes: 0,
             seconds: 0,
-            isValid: true
+            isStop: true
           })
         }
       }, 1000)
       return () => clearInterval(interval)
     }
-  }, [questions, quizTimeState.isValid])
+  }, [questions])
+
+  useEffect(() => {
+    if (quizTimeState.isStop) {
+      reduxDispatch(setDialogVisibleAction(DialogNamesEnum.QuizGameDialog, true));
+    }
+  }, [quizTimeState.isStop])
 
   /* framer-motion */
   const variants = {
@@ -144,6 +158,10 @@ const Quiz: React.FC = () => {
 
   const handleRadioChange = (value: string, name: string) => {
     quizFormik.setFieldValue(name, value);
+  }
+
+  const handleRestartGame = () => {
+    console.log('restart the game')
   }
 
   return (
@@ -191,7 +209,7 @@ const Quiz: React.FC = () => {
               <motion.p
                 initial={{ y: -100, opacity: 0, display: 'none' }}
                 animate={{ y: 0, opacity: 1, display: 'block' }}
-                transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
+                transition={{ delay: 1, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
                 className="timer mb-5"
               >
                 {
@@ -206,7 +224,7 @@ const Quiz: React.FC = () => {
                 className="quiz-card-container"
                 initial={{ y: -100, opacity: 0, display: 'none' }}
                 animate={{ y: 0, opacity: 1, display: 'block' }}
-                transition={{ delay: 1.5, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
+                transition={{ delay: 1, ease: [0, 0.71, 0.2, 1.01] , duration: 1.5 }}
               >
                 <div
                   className={`quiz-item ${searchFormik.values.amount === 9 ? 'repeat-3' : '' } ${searchFormik.values.amount === 16 ? 'repeat-4' : '' } ${searchFormik.values.amount === 25 ? 'repeat-5' : '' }`}>
@@ -260,6 +278,10 @@ const Quiz: React.FC = () => {
           </FormikProvider>
         )
       }
+      <QuizDialog
+        visible={dialogState.QuizGameDialog.visible}
+        onConfirm={handleRestartGame}
+      />
     </div>
   )
 }
