@@ -1,8 +1,10 @@
 export enum RoundStateValuesEnum {
   /** Bet */
   Bet = '1',
+  /** Init */
+  Init = '2',
   /** Player */
-  Player = '2',
+  Player = '3',
   /** Dealer */
-  Dealer = '3'
+  Dealer = '4'
 }
