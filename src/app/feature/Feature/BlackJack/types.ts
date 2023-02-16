@@ -5,11 +5,6 @@ export interface Player {
   bet: number;
 }
 
-export interface GameScore {
-  player: number;
-  dealer: number;
-}
-
 export interface PokerCard {
   value: string;
   suit: string | SuitsTypeTextEnum;

@@ -35,6 +35,10 @@
   background-color: $color-white;
   border-radius: $border-radius-minor;
 
+  &.card-hidden {
+    background-color: $color__minior;
+  }
+
   & .card-value {
     position: absolute;
     left: 0;
@@ -62,3 +66,4 @@
     color: black;
   }
 }
+

@@ -6,7 +6,7 @@ import { BsSuitDiamondFill } from 'react-icons/bs';
 import { GiSpades } from 'react-icons/gi';
 import { GiHearts } from 'react-icons/gi';
 import { CardStateValuesEnum, RoundStateValuesEnum, PlayerTextEnum, SuitsTypeTextEnum } from 'app/core/enum/feature/BlackJack';
-import { Player, PokerCard, FormValues, GameState, GameScore } from './types';
+import { Player, PokerCard, FormValues, GameState } from './types';
 import Card from './Card.json';
 
 const BlackJack: React.FC = () => {
@@ -15,21 +15,18 @@ const BlackJack: React.FC = () => {
       bet: ''
     },
     onSubmit: (formValues) => {
+      setPlayerInfo({
+        balance: playerInfo.balance - parseInt(formValues.bet),
+        bet: parseInt(formValues.bet)
+      })
       setPokerGameState({
         round: RoundStateValuesEnum.Init,
         playerCards: [],
         dealerCards: []
       })
-      setPlayerInfo({
-        balance: playerInfo.balance - parseInt(formValues.bet),
-        bet: parseInt(formValues.bet)
-      })
     }
   });
-  const [score, setScore] = useState<GameScore>({
-    player: 0,
-    dealer: 0
-  });
+
   const [playerInfo, setPlayerInfo] = useState<Player>({
     balance: 100,
     bet: 0
@@ -39,7 +36,6 @@ const BlackJack: React.FC = () => {
     playerCards: [],
     dealerCards: []
   })
-
   const [pokerCards, setPokerCards] = useState<PokerCard[]>(Card.cards.map(item => {
     return { ...item, state: CardStateValuesEnum.Hidden }
   }));
@@ -50,8 +46,21 @@ const BlackJack: React.FC = () => {
       handleDrawCard(PlayerTextEnum.Dealer, CardStateValuesEnum.Hidden)
       handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
       handleDrawCard(PlayerTextEnum.Dealer, CardStateValuesEnum.Revealed)
+
+      setPokerGameState({
+        round: RoundStateValuesEnum.Player,
+        playerCards: [...pokerGameState.playerCards],
+        dealerCards: [...pokerGameState.dealerCards]
+      })
     }
-  }, [pokerGameState])
+    if (pokerGameState.round === RoundStateValuesEnum.Dealer) {
+      if (handleCalculateScore(pokerGameState.dealerCards) >= 17) {
+        console.log('checkWin');
+      } else {
+        handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
+      }
+    }
+  }, [pokerGameState.round])
 
   const handleDrawCard = (player: PlayerTextEnum, state: CardStateValuesEnum) => {
     if (pokerCards.length) {
@@ -77,14 +86,14 @@ const BlackJack: React.FC = () => {
         if (player === PlayerTextEnum.Dealer) {
           pokerGameState.dealerCards.push(targetCardUpdate)
           setPokerGameState({
-            round: RoundStateValuesEnum.Bet,
+            round: RoundStateValuesEnum.Init,
             dealerCards: [...pokerGameState.dealerCards],
             playerCards: [...pokerGameState.playerCards]
           })
         } else {
           pokerGameState.playerCards.push(targetCardUpdate)
           setPokerGameState({
-            round: RoundStateValuesEnum.Bet,
+            round: RoundStateValuesEnum.Init,
             dealerCards: [...pokerGameState.dealerCards],
             playerCards: [...pokerGameState.playerCards]
           })
@@ -94,7 +103,7 @@ const BlackJack: React.FC = () => {
       case (RoundStateValuesEnum.Dealer): {
         pokerGameState.dealerCards.push(targetCardUpdate)
         setPokerGameState({
-          round: RoundStateValuesEnum.Player,
+          round: RoundStateValuesEnum.Dealer,
           dealerCards: [...pokerGameState.dealerCards],
           playerCards: [...pokerGameState.playerCards]
         })
@@ -103,7 +112,7 @@ const BlackJack: React.FC = () => {
       case (RoundStateValuesEnum.Player): {
         pokerGameState.playerCards.push(targetCardUpdate)
         setPokerGameState({
-          round: RoundStateValuesEnum.Dealer,
+          round: RoundStateValuesEnum.Player,
           dealerCards: [...pokerGameState.dealerCards],
           playerCards: [...pokerGameState.playerCards]
         })
@@ -112,8 +121,67 @@ const BlackJack: React.FC = () => {
     }
   }
 
+  const handleClickHitBtn = () => {
+    handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
+  }
+
+  const handleClickStandBtn = () => {
+    setPokerGameState({
+      round: RoundStateValuesEnum.Dealer,
+      playerCards: [...pokerGameState.playerCards],
+      dealerCards: pokerGameState.dealerCards.map(card => {
+        return { ...card, state: CardStateValuesEnum.Revealed }
+      })
+    })
+  }
+
+  console.log('pokerGameState', pokerGameState);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue('bet', event.target.value)
+  }
+
+  const handleCalculateScore = (cards: PokerCard[]) => {
+    let total = 0;
+    cards.forEach(card => {
+      if (card.state === CardStateValuesEnum.Revealed && card.value !== 'A') {
+        switch (card.value) {
+          case 'K': {
+            total += 10;
+            break;
+          }
+          case 'Q': {
+            total += 10;
+            break;
+          }
+          case 'J': {
+            total += 10;
+            break;
+          }
+          default:
+            total += parseInt(card.value)
+            break;
+        }
+      }
+    })
+    const Aces = cards.filter(card => card.value === 'A');
+    Aces.forEach(card => {
+      if (card.state === CardStateValuesEnum.Revealed) {
+        if ((total + 11) > 21) {
+          total += 1;
+        } else if ((total + 11) === 21) {
+          if (Aces.length > 1) {
+            total += 1;
+          }
+          else {
+            total += 11;
+          }
+        } else {
+          total += 11;
+        }
+      }
+    })
+    return total;
   }
 
   return (
@@ -138,15 +206,19 @@ const BlackJack: React.FC = () => {
             </FormikProvider>
           </div>
           <div className="black-jack-table">
-            <div className="d-flex justify-content-center">
-              <p>Dealer's score is {score.dealer}</p>
-            </div>
+            {
+              pokerGameState.round !== RoundStateValuesEnum.Bet && (
+                <div className="d-flex justify-content-center">
+                  <p>Dealer's score is {handleCalculateScore(pokerGameState.dealerCards)}</p>
+                </div>
+              )
+            }
             <div className="d-flex justify-content-center">
               {
                 pokerGameState.dealerCards.map((card, index) => (
-                  <div key={index} className="black-jack-card my-5 mx-2">
+                  <div key={index} className={`black-jack-card my-4 mx-2 ${card.state === CardStateValuesEnum.Hidden ? 'card-hidden' : '' }` }>
                     {
-                      card.suit === SuitsTypeTextEnum.Clubs && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Clubs && (
                         <div className="card-black">
                           <p className="card-value">{card.value}</p>
                           <GiClubs />
@@ -154,7 +226,7 @@ const BlackJack: React.FC = () => {
                       )
                     }
                     {
-                      card.suit === SuitsTypeTextEnum.Diamonds && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Diamonds && (
                         <div className="card-red">
                           <p className="card-value">{card.value}</p>
                           <BsSuitDiamondFill />
@@ -162,7 +234,7 @@ const BlackJack: React.FC = () => {
                       )
                     }
                     {
-                      card.suit === SuitsTypeTextEnum.Hearts && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Hearts && (
                         <div className="card-red">
                           <p className="card-value">{card.value}</p>
                           <GiHearts />
@@ -170,7 +242,7 @@ const BlackJack: React.FC = () => {
                       )
                     }
                     {
-                      card.suit === SuitsTypeTextEnum.Spades && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Spades && (
                         <div className="card-black">
                           <p className="card-value">{card.value}</p>
                           <GiSpades />
@@ -181,15 +253,19 @@ const BlackJack: React.FC = () => {
                 ))
               }
             </div>
-            <div className="d-flex justify-content-center my-5">
-              <p>Your score is {score.player}</p>
-            </div>
+            {
+              pokerGameState.round !== RoundStateValuesEnum.Bet && (
+                <div className="d-flex justify-content-center my-4">
+                  <p>Your score is {handleCalculateScore(pokerGameState.playerCards)}</p>
+                </div>
+              )
+            }
             <div className="d-flex justify-content-center">
               {
                 pokerGameState.playerCards.map((card, index) => (
                   <div key={index} className="black-jack-card mx-2">
                     {
-                      card.suit === SuitsTypeTextEnum.Clubs && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Clubs && (
                         <div className="card-black">
                           <p className="card-value">{card.value}</p>
                           <GiClubs />
@@ -197,7 +273,7 @@ const BlackJack: React.FC = () => {
                       )
                     }
                     {
-                      card.suit === SuitsTypeTextEnum.Diamonds && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Diamonds && (
                         <div className="card-red">
                           <p className="card-value">{card.value}</p>
                           <BsSuitDiamondFill />
@@ -205,7 +281,7 @@ const BlackJack: React.FC = () => {
                       )
                     }
                     {
-                      card.suit === SuitsTypeTextEnum.Hearts && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Hearts && (
                         <div className="card-red">
                           <p className="card-value">{card.value}</p>
                           <GiHearts />
@@ -213,7 +289,7 @@ const BlackJack: React.FC = () => {
                       )
                     }
                     {
-                      card.suit === SuitsTypeTextEnum.Spades && (
+                      card.state === CardStateValuesEnum.Revealed && card.suit === SuitsTypeTextEnum.Spades && (
                         <div className="card-black">
                           <p className="card-value">{card.value}</p>
                           <GiSpades />
@@ -224,6 +300,14 @@ const BlackJack: React.FC = () => {
                 ))
               }
             </div>
+            {
+              pokerGameState.round === RoundStateValuesEnum.Player && (
+                <div className="d-flex justify-content-center mt-5">
+                  <button type="button" className="button-main black-jack-btn mx-4" onClick={handleClickHitBtn}>Hit</button>
+                  <button type="button" className="button-main black-jack-btn mx-4" onClick={handleClickStandBtn}>Stand</button>
+                </div>
+              )
+            }
           </div>
         </div>
         <div className="col-3">
