@@ -21,8 +21,16 @@ p {
 /** HTML */
 
 /** Common */
+
 .w-50 {
   width: 50%;
 }
 
+.color-danger {
+  color: $color-red;
+}
+
+.color-blue {
+  color: $color-blue;
+}
 /** Common */

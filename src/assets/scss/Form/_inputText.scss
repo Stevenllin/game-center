@@ -1,0 +1,10 @@
+.ant-input {
+  max-width: 500px !important;
+  height: 60px;
+  border-radius: $border-radius-minor;
+  font-size: $font-md !important;
+}
+
+.ant-input:placeholder-shown {
+  font-size: $font-md;
+}

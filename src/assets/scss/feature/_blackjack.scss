@@ -1,0 +1,17 @@
+
+.black-jack-btn {
+  min-width: 120px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.black-jack-board {
+  & form {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: $font-md;
+    color: $color-white;
+  }
+}
