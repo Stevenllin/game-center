@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { setDialogVisibleAction } from 'app/store/element/action';
+import { IconTextEnum } from 'app/core/enum/element/icon';
+import { RiErrorWarningFill } from 'react-icons/ri';
 import { DialogProps } from './types';
 
 const Dialog: React.FC<DialogProps> = (props) => {
@@ -26,6 +28,17 @@ const Dialog: React.FC<DialogProps> = (props) => {
   return (
     <div id={props.name} className={'dialog' + (props.visible ? '--visible' : '')}>
       <div className="dialog__container" ref={dialogContainerElemRef}>
+        {
+          props.icons && (
+            <div className="dialog__icon">
+              {
+                props.icons === IconTextEnum.Warning && (
+                  <RiErrorWarningFill />
+                )
+              }
+            </div>
+          )
+        }
         <div className="dialog__head">
           <p className="dialog__title">
             {props.title}

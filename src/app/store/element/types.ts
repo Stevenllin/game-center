@@ -5,6 +5,7 @@ export interface ElementState {
 }
 
 export interface DialogsState {
+  WarningDialog: DialogState;
   OXOGameDialog: DialogState;
   QuizGameDialog: DialogState;
 }

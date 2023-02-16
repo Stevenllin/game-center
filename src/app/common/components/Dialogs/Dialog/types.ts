@@ -7,6 +7,7 @@ export interface DialogProps {
   confirmedAutoClose?: boolean,
   showConfirmBtn?: boolean;
   confirmBtnText?: string;
+  icons?: string;
   onClose?: () => void;
   onConfirm?:() => void;
 }

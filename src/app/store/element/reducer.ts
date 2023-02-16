@@ -3,6 +3,9 @@ import { ElementState, ELEMENTS_DIALOGS__SET_DIALOG_VISIBLE, ElementActions } fr
 
 const initialState: ElementState = {
   dialogs: {
+    WarningDialog: {
+      visible: false
+    },
     OXOGameDialog: {
       visible: false
     },
