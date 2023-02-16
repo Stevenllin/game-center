@@ -5,25 +5,45 @@ import { GiClubs } from 'react-icons/gi';
 import { BsSuitDiamondFill } from 'react-icons/bs';
 import { GiSpades } from 'react-icons/gi';
 import { GiHearts } from 'react-icons/gi';
-import { CardStateValuesEnum, RoundStateValuesEnum, PlayerTextEnum, SuitsTypeTextEnum } from 'app/core/enum/feature/BlackJack';
+import { useDispatch } from 'react-redux';
+import { RootState } from 'app/store/types';
+import { useSelector } from 'react-redux';
+import WarningDialog from 'app/common/components/Dialogs/WarningDialog';
+import { setDialogVisibleAction } from 'app/store/element/action';
+import { DialogNamesEnum } from 'app/core/enum/element/dialog';
+import { CardStateValuesEnum, RoundStateValuesEnum, PlayerTextEnum, SuitsTypeTextEnum, ErrorMessageTextEnum } from 'app/core/enum/feature/BlackJack';
 import { Player, PokerCard, FormValues, GameState } from './types';
 import Card from './Card.json';
 
 const BlackJack: React.FC = () => {
+  const dialogState = useSelector((state: RootState) => state.elements.dialogs);
+  const reduxDispatch = useDispatch();
+
   const formik = useFormik<FormValues>({
     initialValues: {
       bet: ''
     },
     onSubmit: (formValues) => {
-      setPlayerInfo({
-        balance: playerInfo.balance - parseInt(formValues.bet),
-        bet: parseInt(formValues.bet)
-      })
-      setPokerGameState({
-        round: RoundStateValuesEnum.Init,
-        playerCards: [],
-        dealerCards: []
-      })
+      if (formValues.bet !== '') {
+        if (!(/^[1-9]\d*$/).test(formValues.bet)) {
+          setErrorMsg(ErrorMessageTextEnum.Error1);
+          reduxDispatch(setDialogVisibleAction(DialogNamesEnum.WarningDialog, true));
+        } else if (parseInt(formValues.bet) > playerInfo.balance) {
+          setErrorMsg(ErrorMessageTextEnum.Error2);
+          reduxDispatch(setDialogVisibleAction(DialogNamesEnum.WarningDialog, true));
+        } else {
+          setPlayerInfo({
+            balance: playerInfo.balance - parseInt(formValues.bet),
+            bet: parseInt(formValues.bet)
+          })
+          setPokerGameState({
+            round: RoundStateValuesEnum.Init,
+            playerCards: [],
+            dealerCards: []
+          })
+          setErrorMsg('')
+        }
+      }
     }
   });
 
@@ -39,6 +59,7 @@ const BlackJack: React.FC = () => {
   const [pokerCards, setPokerCards] = useState<PokerCard[]>(Card.cards.map(item => {
     return { ...item, state: CardStateValuesEnum.Hidden }
   }));
+  const [errorMsg, setErrorMsg] = useState<ErrorMessageTextEnum | string>('');
 
   useEffect(() => {
     if (pokerGameState.round === RoundStateValuesEnum.Init) {
@@ -316,6 +337,10 @@ const BlackJack: React.FC = () => {
           </div>
         </div>
       </div>
+      <WarningDialog
+        visible={dialogState.WarningDialog.visible}
+        content={errorMsg}
+      />
     </div>
   )
 }
