@@ -10,6 +10,7 @@ import { RxQuestionMarkCircled } from "react-icons/rx";
 import { BiTired } from "react-icons/bi";
 import { BiX } from "react-icons/bi";
 import { BsGridFill } from "react-icons/bs";
+import { GiClubs } from 'react-icons/gi';
 import { motion } from "framer-motion";
 import { NavigationStateValuesEnum } from 'app/core/enum/element/navigation';
 import { setGlobalNavigationState } from 'app/store/global/action';
@@ -17,6 +18,7 @@ import { setGlobalNavigationState } from 'app/store/global/action';
 const Navigation: React.FC = () => {
   const routerHistory = useHistory();
   const navigationState = useSelector((state: RootState) => state.global.navigationState);
+  console.log('navigationState', navigationState);
   const reduxDispatch = useDispatch();
   /**
    * @description 
@@ -38,6 +40,10 @@ const Navigation: React.FC = () => {
       }
       case (NavigationStateValuesEnum.Hang): {
         routerHistory.push(ROUTES.FEATURES__HANG);
+        break;
+      }
+      case (NavigationStateValuesEnum.BlackJack): {
+        routerHistory.push(ROUTES.FEATURES__BLACKJACK)
         break;
       }
     }
@@ -85,6 +91,16 @@ const Navigation: React.FC = () => {
             whileHover={{ scale: 1.4, rotate: 360 }}
           >
             <BiTired />
+          </motion.button>
+        </div>
+        <div className="my-4">
+          <motion.button
+            type="button"
+            className={navigationState === NavigationStateValuesEnum.BlackJack ? 'nav-active' : ''}
+            onClick={() => handleSetNavigationState(NavigationStateValuesEnum.BlackJack)}
+            whileHover={{ scale: 1.4, rotate: 360 }}
+          >
+            <GiClubs />
           </motion.button>
         </div>
       </div>

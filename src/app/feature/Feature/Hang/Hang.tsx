@@ -35,6 +35,7 @@ const Hang: React.FC = () => {
   }
   const [wordToGuess, setWordToGuess] = useState<string>(handleGetRandomWord);
   const [guessedWord, setGuessedWord] = useState<string[]>([]);
+  const [unfamiliarWords, setUnfamiliarWords] = useState<string[]>([]);
 
   const incorrectLetter = guessedWord.filter(letter => !wordToGuess.includes(letter));
   const isLoser = incorrectLetter.length >= 6
@@ -48,6 +49,7 @@ const Hang: React.FC = () => {
     }, [guessedWord]
   )
 
+  console.log('unfamiliarWords', unfamiliarWords);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const key = e.key;
@@ -64,6 +66,7 @@ const Hang: React.FC = () => {
   }, [guessedWord, isLoser, isWinner])
 
   const handleRestartGame = () => {
+    setUnfamiliarWords([...unfamiliarWords, wordToGuess])
     setGuessedWord([])
     setWordToGuess(handleGetRandomWord())
   }
@@ -71,13 +74,52 @@ const Hang: React.FC = () => {
   return (
     <div id="hang" className="hang-container">
       {/** hangman section */}
-      <div className="hang-wrapper">
-        {BODY_PARTS.slice(0, incorrectLetter.length)}
-        <div className="hang-device1" />
-        <div className="hang-device2" />
-        <div className="hang-device3" />
-        <div className="hang-device4" />
+      <div className="row w-100">
+        <div className="d-flex justify-content-end col-6">
+          <div className="hang-wrapper">
+            {BODY_PARTS.slice(0, incorrectLetter.length)}
+            <div className="hang-device1" />
+            <div className="hang-device2" />
+            <div className="hang-device3" />
+            <div className="hang-device4" />
+          </div>
+        </div>
+        <div className="d-flex justify-content-center col-6">
+          <div className="hang-unfamiliar text-center">
+            <p>Unfamiliar Words</p>
+            <div className="row">
+              <div className="col-6">
+                {
+                  unfamiliarWords.map((words, index) => {
+                    if (index % 2 === 0) {
+                      return (
+                        <p>{index+1}: <span className="ms-2">{words}</span></p>
+                      )
+                    } else {
+                      return null
+                    }
+                  })
+                }
+              </div>
+              <div className="col-6">
+              {
+                  unfamiliarWords.map((words, index) => {
+                    if (index % 2 !== 0) {
+                      return (
+                        <p>{index+1}: <span className="ms-2">{words}</span></p>
+                      )
+                    } else {
+                      return null
+                    }
+                  })
+                }
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+
 
       {
         isLoser && (

@@ -107,6 +107,13 @@
   rotate: -60deg;
 }
 
+.hang-unfamiliar {
+  width: 100%;
+  color: $color-white;
+  font-size: $font-md;
+  overflow: scroll;
+}
+
 .hang-word {
   display: flex;
   gap: .25em;

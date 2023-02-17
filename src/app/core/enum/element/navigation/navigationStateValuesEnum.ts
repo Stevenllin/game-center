@@ -6,6 +6,8 @@ export enum NavigationStateValuesEnum {
     /** Hang */
     Hang = '3',
     /** TWO */
-    TWO = '4'
+    TWO = '4',
+    /** BlackJack */
+    BlackJack = '5'
   }
   
