@@ -76,7 +76,7 @@ const BlackJack: React.FC = () => {
     }
     if (pokerGameState.round === RoundStateValuesEnum.Dealer) {
       if (handleCalculateScore(pokerGameState.dealerCards) >= 17) {
-        console.log('checkWin');
+        handleCheckWin(RoundStateValuesEnum.Dealer)
       } else {
         handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
       }
@@ -142,8 +142,44 @@ const BlackJack: React.FC = () => {
     }
   }
 
+  const handleCheckWin = (round: RoundStateValuesEnum) => {
+    const playerScore = handleCalculateScore(pokerGameState.playerCards);
+    if (playerScore > 21) {
+      setPlayerInfo({
+        balance: playerInfo.balance,
+        bet: 0
+      })
+    }
+    if (round === RoundStateValuesEnum.Dealer) {
+      const dealerScore = handleCalculateScore(pokerGameState.dealerCards);
+      if (dealerScore > 21) {
+        setPlayerInfo({
+          balance: playerInfo.balance + 2 * playerInfo.bet,
+          bet: 0
+        })
+      }
+      if (playerScore > dealerScore) {
+        setPlayerInfo({
+          balance: playerInfo.balance + 2 * playerInfo.bet,
+          bet: 0
+        })
+      } else if (playerScore < dealerScore) {
+        setPlayerInfo({
+          balance: playerInfo.balance,
+          bet: 0
+        })
+      } else {
+        setPlayerInfo({
+          balance: playerInfo.balance + playerInfo.bet,
+          bet: 0
+        })
+      }
+    }
+  }
+
   const handleClickHitBtn = () => {
     handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
+    handleCheckWin(RoundStateValuesEnum.Player)
   }
 
   const handleClickStandBtn = () => {
@@ -154,9 +190,8 @@ const BlackJack: React.FC = () => {
         return { ...card, state: CardStateValuesEnum.Revealed }
       })
     })
+    handleCheckWin(RoundStateValuesEnum.Dealer)
   }
-
-  console.log('pokerGameState', pokerGameState);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue('bet', event.target.value)
