@@ -74,14 +74,19 @@ const BlackJack: React.FC = () => {
         dealerCards: [...pokerGameState.dealerCards]
       })
     }
+    if (pokerGameState.round === RoundStateValuesEnum.Player) {
+      handleCheckWin(RoundStateValuesEnum.Player)
+    }
     if (pokerGameState.round === RoundStateValuesEnum.Dealer) {
-      if (handleCalculateScore(pokerGameState.dealerCards) >= 17) {
-        handleCheckWin(RoundStateValuesEnum.Dealer)
-      } else {
-        handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
+      if (handleCalculateScore(pokerGameState.playerCards) <= 21) {
+        if (handleCalculateScore(pokerGameState.dealerCards) >= 17) {
+          handleCheckWin(RoundStateValuesEnum.Dealer)
+        } else {
+          handleDrawCard(PlayerTextEnum.Dealer, CardStateValuesEnum.Revealed)
+        }
       }
     }
-  }, [pokerGameState.round])
+  }, [pokerGameState])
 
   const handleDrawCard = (player: PlayerTextEnum, state: CardStateValuesEnum) => {
     if (pokerCards.length) {
@@ -149,6 +154,11 @@ const BlackJack: React.FC = () => {
         balance: playerInfo.balance,
         bet: 0
       })
+      setPokerGameState({
+        round: RoundStateValuesEnum.Dealer,
+        playerCards: [...pokerGameState.playerCards],
+        dealerCards: [...pokerGameState.dealerCards]
+      })
     }
     if (round === RoundStateValuesEnum.Dealer) {
       const dealerScore = handleCalculateScore(pokerGameState.dealerCards);
@@ -157,8 +167,7 @@ const BlackJack: React.FC = () => {
           balance: playerInfo.balance + 2 * playerInfo.bet,
           bet: 0
         })
-      }
-      if (playerScore > dealerScore) {
+      } else if (playerScore > dealerScore) {
         setPlayerInfo({
           balance: playerInfo.balance + 2 * playerInfo.bet,
           bet: 0
@@ -179,7 +188,6 @@ const BlackJack: React.FC = () => {
 
   const handleClickHitBtn = () => {
     handleDrawCard(PlayerTextEnum.Player, CardStateValuesEnum.Revealed)
-    handleCheckWin(RoundStateValuesEnum.Player)
   }
 
   const handleClickStandBtn = () => {
@@ -190,7 +198,6 @@ const BlackJack: React.FC = () => {
         return { ...card, state: CardStateValuesEnum.Revealed }
       })
     })
-    handleCheckWin(RoundStateValuesEnum.Dealer)
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,6 +245,14 @@ const BlackJack: React.FC = () => {
       }
     })
     return total;
+  }
+
+  const handleRestartGame = () => {
+    setPokerGameState({
+      round: RoundStateValuesEnum.Bet,
+      playerCards: [],
+      dealerCards: []
+    })
   }
 
   return (
@@ -361,6 +376,13 @@ const BlackJack: React.FC = () => {
                 <div className="d-flex justify-content-center mt-5">
                   <button type="button" className="button-main black-jack-btn mx-4" onClick={handleClickHitBtn}>Hit</button>
                   <button type="button" className="button-main black-jack-btn mx-4" onClick={handleClickStandBtn}>Stand</button>
+                </div>
+              )
+            }
+            {
+              pokerGameState.round === RoundStateValuesEnum.Dealer && (
+                <div className="d-flex justify-content-center">
+                  <button type="button" className="text-center mt-5" onClick={handleRestartGame}><p>Next round?</p></button>
                 </div>
               )
             }
