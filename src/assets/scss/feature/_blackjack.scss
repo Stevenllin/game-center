@@ -1,4 +1,6 @@
-
+.black-jack-container {
+  height: 100%;
+}
 .black-jack-btn {
   min-width: 120px;
   text-align: center;
@@ -67,3 +69,22 @@
   }
 }
 
+.black-jack-record {
+  height: 100%;
+  padding: 30px;
+  overflow: scroll;
+  background-color: $color__minior;
+  border-radius: $border-radius-main;
+}
+
+.record-title {
+  font-size: $font-md;
+  color: $color-white;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.record-content {
+  font-size: $font-sm;
+  color: $color-white;
+}

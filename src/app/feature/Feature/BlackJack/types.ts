@@ -1,4 +1,4 @@
-import { SuitsTypeTextEnum, CardStateValuesEnum, RoundStateValuesEnum } from 'app/core/enum/feature/BlackJack';
+import { SuitsTypeTextEnum, CardStateValuesEnum, RoundStateValuesEnum, ResultTypeValuesEnum } from 'app/core/enum/feature/BlackJack';
 
 export interface Player {
   balance: number;
@@ -21,7 +21,8 @@ export interface GameState {
   dealerCards: PokerCard[]
 }
 
-export interface History {
-  result: string;
+export interface Record {
+  result: ResultTypeValuesEnum;
   bet: number;
+  balance: number;
 }

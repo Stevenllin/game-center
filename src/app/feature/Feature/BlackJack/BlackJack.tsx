@@ -11,8 +11,8 @@ import { useSelector } from 'react-redux';
 import WarningDialog from 'app/common/components/Dialogs/WarningDialog';
 import { setDialogVisibleAction } from 'app/store/element/action';
 import { DialogNamesEnum } from 'app/core/enum/element/dialog';
-import { CardStateValuesEnum, RoundStateValuesEnum, PlayerTextEnum, SuitsTypeTextEnum, ErrorMessageTextEnum } from 'app/core/enum/feature/BlackJack';
-import { Player, PokerCard, FormValues, GameState } from './types';
+import { CardStateValuesEnum, RoundStateValuesEnum, PlayerTextEnum, SuitsTypeTextEnum, ErrorMessageTextEnum, ResultTypeValuesEnum } from 'app/core/enum/feature/BlackJack';
+import { Player, PokerCard, FormValues, GameState, Record } from './types';
 import Card from './Card.json';
 
 const BlackJack: React.FC = () => {
@@ -59,6 +59,7 @@ const BlackJack: React.FC = () => {
   const [pokerCards, setPokerCards] = useState<PokerCard[]>(Card.cards.map(item => {
     return { ...item, state: CardStateValuesEnum.Hidden }
   }));
+  const [gameRecord, setGameRecord] = useState<Record[]>([]);
   const [errorMsg, setErrorMsg] = useState<ErrorMessageTextEnum | string>('');
 
   useEffect(() => {
@@ -150,6 +151,11 @@ const BlackJack: React.FC = () => {
   const handleCheckWin = (round: RoundStateValuesEnum) => {
     const playerScore = handleCalculateScore(pokerGameState.playerCards);
     if (playerScore > 21) {
+      setGameRecord([...gameRecord, {
+        result: ResultTypeValuesEnum.Lose,
+        balance: playerInfo.balance,
+        bet: playerInfo.bet
+      }]);
       setPlayerInfo({
         balance: playerInfo.balance,
         bet: 0
@@ -162,22 +168,32 @@ const BlackJack: React.FC = () => {
     }
     if (round === RoundStateValuesEnum.Dealer) {
       const dealerScore = handleCalculateScore(pokerGameState.dealerCards);
-      if (dealerScore > 21) {
-        setPlayerInfo({
+      if (dealerScore > 21 || playerScore > dealerScore) {
+        setGameRecord([...gameRecord, {
+          result: ResultTypeValuesEnum.Win,
           balance: playerInfo.balance + 2 * playerInfo.bet,
-          bet: 0
-        })
-      } else if (playerScore > dealerScore) {
+          bet: playerInfo.bet
+        }]);
         setPlayerInfo({
           balance: playerInfo.balance + 2 * playerInfo.bet,
           bet: 0
         })
       } else if (playerScore < dealerScore) {
+        setGameRecord([...gameRecord, {
+          result: ResultTypeValuesEnum.Lose,
+          balance: playerInfo.balance,
+          bet: playerInfo.bet
+        }]);
         setPlayerInfo({
           balance: playerInfo.balance,
           bet: 0
         })
       } else {
+        setGameRecord([...gameRecord, {
+          result: ResultTypeValuesEnum.Tie,
+          balance: playerInfo.balance + playerInfo.bet,
+          bet: playerInfo.bet
+        }]);
         setPlayerInfo({
           balance: playerInfo.balance + playerInfo.bet,
           bet: 0
@@ -255,9 +271,11 @@ const BlackJack: React.FC = () => {
     })
   }
 
+  console.log('gameRecord', gameRecord);
+
   return (
     <div id="black-jack" className="black-jack-container">
-      <div className="row">
+      <div className="row h-100">
         <div className="col-9">
           <div className="black-jack-board">
             <FormikProvider value={formik}>
@@ -388,9 +406,38 @@ const BlackJack: React.FC = () => {
             }
           </div>
         </div>
-        <div className="col-3">
-          <div className="black-jack-history">
-            123
+        <div className="col-3 h-100">
+          <div className="black-jack-record">
+            <p className="record-title">Game record</p>
+            <div className="record-content">
+              {
+                gameRecord.map((record, index) => {
+                  if (record.result === ResultTypeValuesEnum.Win) {
+                    return (
+                      <div key={index} className="d-flex justify-content-around my-3">
+                        <p>Won</p>
+                        <p className="color-blue">+{record.bet}</p>
+                        <p>{record.balance}</p>
+                      </div>
+                    )
+                  } else if (record.result === ResultTypeValuesEnum.Lose) {
+                    return (
+                      <div key={index} className="d-flex justify-content-around my-3">
+                        <p>Lost</p>
+                        <p className="color-danger">-{record.bet}</p>
+                        <p>{record.balance}</p>
+                      </div>
+                    )                  
+                  } else {
+                    return (
+                      <div key={index} className="d-flex justify-content-center my-3">
+                        <p className="color-green">You tie this round!!</p>
+                      </div>
+                    )
+                  }
+                })
+              }
+            </div>
           </div>
         </div>
       </div>
