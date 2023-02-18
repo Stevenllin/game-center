@@ -1,7 +1,13 @@
 .oxo-container {
-  position: relative;
+  width: 100%;
   margin: 0 auto;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.oxo-board {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,17 +56,24 @@
 }
 
 .oxo-record {
-  position: absolute;
-  left: 8%;
-  top: 35%;
-  width: 400px;
-  height: 400px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  & .o-record {
+    font-size: 108px;
+    color: $color-blue;
+  }
+
+  & .x-record {
+    font-size: 108px;
+    color: $color-red;
+  }
 }
 
 .oxo-label {
-  position: absolute;
-  right: 10%;
-  bottom: 35%;
   width: 150px;
   height: 300px;
   border-radius: $border-radius-oxo-item;

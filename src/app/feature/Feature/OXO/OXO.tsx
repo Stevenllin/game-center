@@ -171,52 +171,64 @@ const OXO: React.FC = () => {
 
   return (
     <div id="oxo" className="oxo-container">
-      <motion.div
-        className="oxo-background"
-        variants={background}
-        initial="hidden"
-        animate="visible"
-      >
-        {board.status.map((oxo, index) => (
-          <motion.div
-            key={index}
-            className={`oxo-item ${result.includes(index) ? 'active' : ''} `}
-            variants={item}
-            onClick={() => handleClickItem(index)}
-          >
-            {
-              oxo === OXOValuesEnum.O && (
-                <div className="o-icons">
-                  <BiCircle />
-                </div>
-              )
-            }
-            {
-              oxo === OXOValuesEnum.X && (
-                <div className="x-icons">
-                  <IoClose />
-                </div>
-              )
-            }
-          </motion.div>
-        ))}
-      </motion.div>
-      <div className="oxo-record">
-        <DoughnutChart
-          value={gameRecord.OPlayer/(gameRecord.OPlayer + gameRecord.XPlayer)}
-        />
-      </div>
-      <div className="oxo-label">
-        <div className="d-flex flex-column justify-content align-items-center p-5">
-          <div
-            className={`${board.round === OXOValuesEnum.O ? 'active o-icons ' : ''}`}
-          >
-            <BiCircle />
+      <div className="row h-100 w-100">
+        <div className="col-2 d-flex flex-column justify-content-center align-items-center">
+          <div className="oxo-record">
+            <p className="o-record">{gameRecord.OPlayer}</p>
+            <DoughnutChart
+              value={gameRecord.OPlayer/(gameRecord.OPlayer + gameRecord.XPlayer)}
+              />
+            <p className="x-record">{gameRecord.XPlayer}</p>
           </div>
-          <div
-            className={`${board.round === OXOValuesEnum.X ? 'active x-icons ' : ''}`}
-          >
-            <IoClose />
+        </div>
+        <div className="col-8 d-flex flex-column justify-content-center align-items-center">
+          <div className="oxo-board">
+            <motion.div
+              className="oxo-background"
+              variants={background}
+              initial="hidden"
+              animate="visible"
+            >
+              {board.status.map((oxo, index) => (
+                <motion.div
+                  key={index}
+                  className={`oxo-item ${result.includes(index) ? 'active' : ''} `}
+                  variants={item}
+                  onClick={() => handleClickItem(index)}
+                >
+                  {
+                    oxo === OXOValuesEnum.O && (
+                      <div className="o-icons">
+                        <BiCircle />
+                      </div>
+                    )
+                  }
+                  {
+                    oxo === OXOValuesEnum.X && (
+                      <div className="x-icons">
+                        <IoClose />
+                      </div>
+                    )
+                  }
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+        <div className="col-2 d-flex flex-column justify-content-center align-items-center">
+          <div className="oxo-label">
+            <div className="d-flex flex-column justify-content align-items-center p-5">
+              <div
+                className={`${board.round === OXOValuesEnum.O ? 'active o-icons ' : ''}`}
+              >
+                <BiCircle />
+              </div>
+              <div
+                className={`${board.round === OXOValuesEnum.X ? 'active x-icons ' : ''}`}
+              >
+                <IoClose />
+              </div>
+            </div>
           </div>
         </div>
       </div>
