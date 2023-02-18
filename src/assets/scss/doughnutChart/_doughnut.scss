@@ -1,0 +1,10 @@
+.doughnut-container {
+  position: relative;
+  padding: 20px;
+
+  & canvas {
+    margin: 0px !important;
+    height: 250px !important;
+    width: 250px !important;
+  }
+}

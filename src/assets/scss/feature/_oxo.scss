@@ -49,10 +49,18 @@
   }
 }
 
+.oxo-record {
+  position: absolute;
+  left: 8%;
+  top: 35%;
+  width: 400px;
+  height: 400px;
+}
+
 .oxo-label {
   position: absolute;
-  right: 5%;
-  bottom: 10%;
+  right: 10%;
+  bottom: 35%;
   width: 150px;
   height: 300px;
   border-radius: $border-radius-oxo-item;

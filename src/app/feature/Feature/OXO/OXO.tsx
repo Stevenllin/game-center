@@ -3,18 +3,23 @@ import _ from 'lodash';
 import { motion } from 'framer-motion';
 import { IoClose } from "react-icons/io5";
 import { BiCircle } from "react-icons/bi";
-import { OXOValuesEnum } from "app/core/enum/feature/OXO";
 import { useDispatch } from 'react-redux';
 import { RootState } from 'app/store/types';
 import { useSelector } from 'react-redux';
 import { setDialogVisibleAction } from 'app/store/element/action';
 import OXODialog from 'app/common/components/Dialogs/OXODiaglog';
+import DoughnutChart from 'app/common/components/DoughnutChart';
+import { OXOValuesEnum } from "app/core/enum/feature/OXO";
 import { DialogNamesEnum } from 'app/core/enum/element/dialog';
-import { OXOBoard } from './types';
+import { OXOBoard, Record } from './types';
 
 const OXO: React.FC = () => {
   const dialogState = useSelector((state: RootState) => state.elements.dialogs);
   const reduxDispatch = useDispatch();
+  const [gameRecord, setGameRecord] = useState<Record>({
+    OPlayer: 0,
+    XPlayer: 0
+  })
 
   const [board, setBoard] = useState<OXOBoard>({
     round: OXOValuesEnum.O,
@@ -91,6 +96,17 @@ const OXO: React.FC = () => {
         isEnd: isWin,
         winner: board.round === OXOValuesEnum.O ? OXOValuesEnum.X : OXOValuesEnum.O
       })
+      if (board.round === OXOValuesEnum.O) {
+        setGameRecord({
+          OPlayer: gameRecord.OPlayer,
+          XPlayer: gameRecord.XPlayer + 1
+        })
+      } else {
+        setGameRecord({
+          OPlayer: gameRecord.OPlayer + 1,
+          XPlayer: gameRecord.XPlayer
+        })
+      }
       reduxDispatch(setDialogVisibleAction(DialogNamesEnum.OXOGameDialog, true));
     } else if (board.status.filter(item => item === '').length === 0) {
       setBoard({
@@ -98,6 +114,10 @@ const OXO: React.FC = () => {
         status: board.status,
         isEnd: true,
         winner: ''
+      })
+      setGameRecord({
+        OPlayer: gameRecord.OPlayer,
+        XPlayer: gameRecord.XPlayer
       })
       reduxDispatch(setDialogVisibleAction(DialogNamesEnum.OXOGameDialog, true));
     }
@@ -181,6 +201,11 @@ const OXO: React.FC = () => {
           </motion.div>
         ))}
       </motion.div>
+      <div className="oxo-record">
+        <DoughnutChart
+          value={gameRecord.OPlayer/(gameRecord.OPlayer + gameRecord.XPlayer)}
+        />
+      </div>
       <div className="oxo-label">
         <div className="d-flex flex-column justify-content align-items-center p-5">
           <div

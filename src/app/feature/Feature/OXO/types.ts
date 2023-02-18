@@ -6,3 +6,8 @@ export interface OXOBoard {
   isEnd: boolean;
   winner: string;
 }
+
+export interface Record {
+  OPlayer: number;
+  XPlayer: number; 
+}
