@@ -166,12 +166,16 @@ const OXO: React.FC = () => {
           >
             {
               oxo === OXOValuesEnum.O && (
-                <BiCircle />
+                <div className="o-icons">
+                  <BiCircle />
+                </div>
               )
             }
             {
               oxo === OXOValuesEnum.X && (
-                <IoClose />
+                <div className="x-icons">
+                  <IoClose />
+                </div>
               )
             }
           </motion.div>
@@ -180,12 +184,12 @@ const OXO: React.FC = () => {
       <div className="oxo-label">
         <div className="d-flex flex-column justify-content align-items-center p-5">
           <div
-            className={`${board.round === OXOValuesEnum.O ? 'active' : ''}`}
+            className={`${board.round === OXOValuesEnum.O ? 'active o-icons ' : ''}`}
           >
             <BiCircle />
           </div>
           <div
-            className={`${board.round === OXOValuesEnum.X ? 'active' : ''}`}
+            className={`${board.round === OXOValuesEnum.X ? 'active x-icons ' : ''}`}
           >
             <IoClose />
           </div>
